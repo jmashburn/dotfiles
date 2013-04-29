@@ -18,6 +18,9 @@ alias cdp='cd ~/Dropbox/projects/'
 alias zshconf='slt ~/.zshrc'
 alias cdw='cd /Applications/MAMP/htdocs/wordpress'
 
+# homesick
+alias hsym='homesick symlink monfresh/dotfiles'
+
 # calabash
 alias cc='calabash-ios console'
 alias ccv='curl http://localhost:37265/version'
