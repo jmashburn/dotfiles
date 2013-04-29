@@ -6,3 +6,5 @@
 [core]
 	excludesfile = ~/.gitignore_global
 	quotepath = false
+[credential]
+	helper = osxkeychain
