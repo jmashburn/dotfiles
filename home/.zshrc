@@ -20,6 +20,7 @@ alias cdw='cd /Applications/MAMP/htdocs/wordpress'
 
 # homesick
 alias hsym='homesick symlink monfresh/dotfiles'
+alias hp='homesick pull monfresh/dotfiles'
 
 # calabash
 alias cc='calabash-ios console'
