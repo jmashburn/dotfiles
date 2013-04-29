@@ -1,0 +1,8 @@
+[user]
+	name = Moncef Belyamani
+	email = giter@done
+[color]
+	ui = 1
+[core]
+	excludesfile = ~/.gitignore_global
+	quotepath = false
