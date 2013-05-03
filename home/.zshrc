@@ -15,12 +15,14 @@ alias ppw='ponyhost push www.moncefandjoanna.com'
 alias cdo='cd ~/Dropbox/projects/octopress'
 alias cda='cd ~/Dropbox/projects/adopt-a-hydrant'
 alias cdp='cd ~/Dropbox/projects/'
+alias cdh='cd ~/Dropbox/projects/human_services_finder'
 alias zshconf='slt ~/.zshrc'
 alias cdw='cd /Applications/MAMP/htdocs/wordpress'
 
 # homesick
 alias hsym='homesick symlink monfresh/dotfiles'
 alias hp='homesick pull monfresh/dotfiles'
+alias cdd='cd ~/.homesick/repos/monfresh/dotfiles'
 
 # calabash
 alias cc='calabash-ios console'
@@ -41,6 +43,7 @@ alias rvmgs='rvm get stable --autolibs=enable'
 
 # rails
 alias bi='bundle install'
+alias zt='zeus test spec'
 
 # brew
 alias bd='brew doctor'
