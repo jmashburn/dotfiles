@@ -43,7 +43,7 @@ alias rvmgs='rvm get stable --autolibs=enable'
 
 # rails
 alias bi='bundle install'
-alias zt='zeus test spec'
+alias zt='zeus rspec spec'
 
 # brew
 alias bd='brew doctor'
