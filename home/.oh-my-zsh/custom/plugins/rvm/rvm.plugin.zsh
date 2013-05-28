@@ -1,0 +1,1 @@
+function rvmg	 { rvm --create --ruby-version use $1 }
