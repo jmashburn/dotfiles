@@ -77,12 +77,12 @@ source $ZSH/oh-my-zsh.sh
 
 # Customize to your needs...
 #export PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Users/moncef/.rvm/bin
-export PATH="/usr/local/bin:/usr/local/sbin:/usr/local/share/python:~/bin:/usr/local/share/npm/bin:$PATH"
+export PATH="/usr/local/bin:/usr/local/sbin:~/bin:/usr/local/share/npm/bin:$PATH"
 
 export ZSH_THEME_GIT_PROMPT_PREFIX=" %F{106}"
 ZSH_THEME_GIT_PROMPT_SUFFIX="%{$reset_color%}"
 ZSH_THEME_GIT_PROMPT_DIRTY="%{$fg[white]$bg[red]%}✖%{$reset_color%}%F{108}"
 ZSH_THEME_GIT_PROMPT_CLEAN="%{$fg[green]%}✔%{$reset_color%}%F{108}"
- 
+
 #export PROMPT='%F{241}$(rvm-prompt)%F{009}⎬%{$fg_bold[green]%}%~ %F{172}%c%F{161}$(git_prompt_info)%{$fg_bold[blue]%} ❯ %{$reset_color%}'
 #export PROMPT='%{$fg_bold[green]%}%~ %F{161}$(git_prompt_info)%{$fg_bold[blue]%} ❯ %{$reset_color%}'
