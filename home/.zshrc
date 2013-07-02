@@ -16,6 +16,7 @@ alias cdo='cd ~/Dropbox/projects/octopress'
 alias cda='cd ~/Dropbox/projects/adopt-a-hydrant'
 alias cdp='cd ~/Dropbox/projects/'
 alias cdh='cd ~/Dropbox/projects/human_services_finder'
+alias cdoh='cd ~/Dropbox/projects/ohana-api'
 alias zshconf='slt ~/.zshrc'
 alias cdw='cd /Applications/MAMP/htdocs/wordpress'
 
@@ -49,6 +50,8 @@ alias zt='zeus rspec spec'
 alias bd='brew doctor'
 alias bu='brew update'
 
+# httpie
+alias http='nocorrect http'
 
 # Set to this to use case-sensitive completion
 # CASE_SENSITIVE="true"
