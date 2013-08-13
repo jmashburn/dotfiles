@@ -82,7 +82,7 @@ source $ZSH/oh-my-zsh.sh
 
 # Customize to your needs...
 #export PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Users/moncef/.rvm/bin
-export PATH="/usr/local/bin:/usr/local/sbin:~/bin:/usr/local/share/npm/bin:$PATH"
+export PATH="/usr/local/bin:/usr/local/sbin:~/bin:$PATH"
 
 export ZSH_THEME_GIT_PROMPT_PREFIX=" %F{106}"
 ZSH_THEME_GIT_PROMPT_SUFFIX="%{$reset_color%}"
