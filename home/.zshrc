@@ -19,6 +19,8 @@ alias cdh='cd ~/Dropbox/projects/human_services_finder'
 alias cdoh='cd ~/Dropbox/projects/ohana-api'
 alias zshconf='slt ~/.zshrc'
 alias cdw='cd /Applications/MAMP/htdocs/wordpress'
+alias gpsdm='git push staging data-merge:master'
+alias gpom='git push origin master'
 
 # homesick
 alias hsym='homesick symlink monfresh/dotfiles'
@@ -89,3 +91,7 @@ ZSH_THEME_GIT_PROMPT_CLEAN="%{$fg[green]%}✔%{$reset_color%}%F{108}"
 
 #export PROMPT='%F{241}$(rvm-prompt)%F{009}⎬%{$fg_bold[green]%}%~ %F{172}%c%F{161}$(git_prompt_info)%{$fg_bold[blue]%} ❯ %{$reset_color%}'
 #export PROMPT='%{$fg_bold[green]%}%~ %F{161}$(git_prompt_info)%{$fg_bold[blue]%} ❯ %{$reset_color%}'
+# added by travis gem
+source /Users/moncef/.travis/travis.sh
+
+export EDITOR='open -a "Sublime Text 2"'
