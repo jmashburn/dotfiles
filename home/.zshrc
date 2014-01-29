@@ -10,11 +10,12 @@ ZSH_THEME="sorin"
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
-alias slt='open -a "Sublime Text 2"'
+alias s='open -a "Sublime Text 2"'
 alias ppw='ponyhost push www.moncefandjoanna.com'
 alias cdo='cd ~/Dropbox/projects/octopress'
 alias cda='cd ~/Dropbox/projects/adopt-a-hydrant'
 alias cdp='cd ~/Dropbox/projects/'
+alias cdt='cd ~/Dropbox/tools/'
 alias cdh='cd ~/Dropbox/projects/human_services_finder'
 alias cdoh='cd ~/Dropbox/projects/ohana-api'
 alias zshconf='slt ~/.zshrc'
@@ -95,3 +96,5 @@ ZSH_THEME_GIT_PROMPT_CLEAN="%{$fg[green]%}✔%{$reset_color%}%F{108}"
 source /Users/moncef/.travis/travis.sh
 
 export EDITOR='open -a "Sublime Text 2"'
+
+PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
