@@ -23,6 +23,7 @@ alias cdw='cd /Applications/MAMP/htdocs/wordpress'
 alias gpsdm='git push staging data-merge:master'
 alias gpom='git push origin master'
 alias gphm='git push heroku master'
+alias p8080='passenger start -p 8080'
 
 # homesick
 alias hsym='homesick symlink monfresh/dotfiles'
