@@ -22,6 +22,7 @@ alias zshconf='slt ~/.zshrc'
 alias cdw='cd /Applications/MAMP/htdocs/wordpress'
 alias gpsdm='git push staging data-merge:master'
 alias gpom='git push origin master'
+alias gphm='git push heroku master'
 
 # homesick
 alias hsym='homesick symlink monfresh/dotfiles'
