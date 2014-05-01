@@ -13,17 +13,22 @@ ZSH_THEME="sorin"
 alias s='open -a "Sublime Text 2"'
 alias ppw='ponyhost push www.moncefandjoanna.com'
 alias cdo='cd ~/Dropbox/projects/octopress'
-alias cda='cd ~/Dropbox/projects/adopt-a-hydrant'
 alias cdp='cd ~/Dropbox/projects/'
 alias cdt='cd ~/Dropbox/tools/'
-alias cdh='cd ~/Dropbox/projects/human_services_finder'
-alias cdoh='cd ~/Dropbox/projects/ohana-api'
+alias cdh='cd ~/Dropbox/projects/codeforamerica/human_services_finder'
+alias cdoh='cd ~/Dropbox/projects/codeforamerica/ohana-api'
+alias cdoa='cd ~/Dropbox/projects/codeforamerica/ohana-api-admin'
 alias zshconf='slt ~/.zshrc'
 alias cdw='cd /Applications/MAMP/htdocs/wordpress'
 alias gpsdm='git push staging data-merge:master'
 alias gpom='git push origin master'
 alias gphm='git push heroku master'
 alias p8080='passenger start -p 8080'
+alias r8080='rails s -p 8080'
+alias odb='cd ~/Dropbox/projects/codeforamerica/ohana-api-dev-box'
+alias smco='cd ~/Dropbox/projects/smcgov/smc-ohana-api'
+alias smcw='cd ~/Dropbox/projects/smcgov/smc-ohana-web-search'
+alias smca='cd ~/Dropbox/projects/smcgov/smc-ohana-api-admin'
 
 # homesick
 alias hsym='homesick symlink monfresh/dotfiles'
@@ -79,7 +84,7 @@ alias http='nocorrect http'
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
-plugins=(git heroku osx rvm)
+plugins=(git heroku osx rvm rake)
 
 source $ZSH/oh-my-zsh.sh
 
