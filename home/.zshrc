@@ -10,7 +10,7 @@ ZSH_THEME="sorin"
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
-alias s='open -a "Sublime Text 2"'
+alias s='open -a "Sublime Text"'
 alias ppw='ponyhost push www.moncefandjoanna.com'
 alias cdo='cd ~/Dropbox/projects/octopress'
 alias cdp='cd ~/Dropbox/projects/'
