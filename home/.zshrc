@@ -29,6 +29,7 @@ alias odb='cd ~/Dropbox/projects/codeforamerica/ohana-api-dev-box'
 alias smco='cd ~/Dropbox/projects/smcgov/smc-ohana-api'
 alias smcw='cd ~/Dropbox/projects/smcgov/smc-ohana-web-search'
 alias smca='cd ~/Dropbox/projects/smcgov/smc-ohana-api-admin'
+alias cfa='cd ~/Dropbox/projects/codeforamerica'
 
 # homesick
 alias hsym='homesick symlink monfresh/dotfiles'
