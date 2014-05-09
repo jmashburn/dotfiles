@@ -10,18 +10,26 @@ ZSH_THEME="sorin"
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
-alias s='open -a "Sublime Text 2"'
+alias s='open -a "Sublime Text"'
 alias ppw='ponyhost push www.moncefandjoanna.com'
 alias cdo='cd ~/Dropbox/projects/octopress'
-alias cda='cd ~/Dropbox/projects/adopt-a-hydrant'
 alias cdp='cd ~/Dropbox/projects/'
 alias cdt='cd ~/Dropbox/tools/'
-alias cdh='cd ~/Dropbox/projects/human_services_finder'
-alias cdoh='cd ~/Dropbox/projects/ohana-api'
+alias cdh='cd ~/Dropbox/projects/codeforamerica/human_services_finder'
+alias cdoh='cd ~/Dropbox/projects/codeforamerica/ohana-api'
+alias cdoa='cd ~/Dropbox/projects/codeforamerica/ohana-api-admin'
 alias zshconf='slt ~/.zshrc'
 alias cdw='cd /Applications/MAMP/htdocs/wordpress'
 alias gpsdm='git push staging data-merge:master'
 alias gpom='git push origin master'
+alias gphm='git push heroku master'
+alias p8080='passenger start -p 8080'
+alias r8080='rails s -p 8080'
+alias odb='cd ~/Dropbox/projects/codeforamerica/ohana-api-dev-box'
+alias smco='cd ~/Dropbox/projects/smcgov/smc-ohana-api'
+alias smcw='cd ~/Dropbox/projects/smcgov/smc-ohana-web-search'
+alias smca='cd ~/Dropbox/projects/smcgov/smc-ohana-api-admin'
+alias cfa='cd ~/Dropbox/projects/codeforamerica'
 
 # homesick
 alias hsym='homesick symlink monfresh/dotfiles'
@@ -77,7 +85,7 @@ alias http='nocorrect http'
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
-plugins=(git heroku osx rvm)
+plugins=(git heroku osx rvm rake)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -92,9 +100,10 @@ ZSH_THEME_GIT_PROMPT_CLEAN="%{$fg[green]%}✔%{$reset_color%}%F{108}"
 
 #export PROMPT='%F{241}$(rvm-prompt)%F{009}⎬%{$fg_bold[green]%}%~ %F{172}%c%F{161}$(git_prompt_info)%{$fg_bold[blue]%} ❯ %{$reset_color%}'
 #export PROMPT='%{$fg_bold[green]%}%~ %F{161}$(git_prompt_info)%{$fg_bold[blue]%} ❯ %{$reset_color%}'
-# added by travis gem
-source /Users/moncef/.travis/travis.sh
 
-export EDITOR='open -a "Sublime Text 2"'
+export EDITOR='open -a "Sublime Text"'
 
 PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
+
+# added by travis gem
+[ -f ~/.travis/travis.sh ] && source ~/.travis/travis.sh
