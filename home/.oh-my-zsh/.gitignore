@@ -5,5 +5,5 @@ custom
 !custom/plugins/example
 !custom/example.zsh
 *.swp
-custom/example.zshcache
+!custom/example.zshcache
 cache/
