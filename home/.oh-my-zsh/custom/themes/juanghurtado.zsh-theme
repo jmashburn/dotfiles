@@ -56,5 +56,5 @@ ZSH_THEME_GIT_PROMPT_SHA_AFTER="%{$WHITE%}]"
 
 # Prompt format
 PROMPT='
-%{$BLUE%}[%~%u]%{$RESET_COLOR%} $(rvm-prompt) %{$orange%}∼ %{$GREEN%}$(current_branch)$(parse_git_dirty)$(git_prompt_ahead)$(git_prompt_status)%{$RESET_COLOR%}
+%{$BLUE%}[%2/]%{$RESET_COLOR%} $(rvm-prompt) %{$orange%}∼ %{$GREEN%}$(current_branch)$(parse_git_dirty)$(git_prompt_ahead)$(git_prompt_status)%{$RESET_COLOR%}
 %{$turquoise%}❯❯%{$RESET_COLOR%} '
