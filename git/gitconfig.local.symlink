@@ -1,0 +1,5 @@
+[user]
+        name = Jared Mashburn
+        email = jmashburn@iwobble.com
+[credential]
+        helper = cache
