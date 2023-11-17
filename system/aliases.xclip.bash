@@ -1,6 +1,5 @@
 # shellcheck shell=bash
 about-alias 'xclip shortcuts'
-
 if _command_exists xclip; then
 
     alias pbcopy="xclip -selection clipboard"
