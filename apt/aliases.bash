@@ -2,9 +2,6 @@
 #
 # -binaryanomaly
 
-cite 'about-alias'
-about-alias 'Apt and dpkg aliases for Ubuntu and Debian distros.'
-
 # set apt aliases
 function _set_pkg_aliases() {
 	if _command_exists apt; then

@@ -3,11 +3,12 @@
 # shellcheck source-path=SCRIPTDIR/vendor/github.com/erichs/composure
 source "${DOTFILES_ROOT}/vendor/github.com/erichs/composure/composure.sh"
 
+appearance_file=${DOTFILES_ROOT}/lib/appearance.bash
 for lib_file in "${DOTFILES_ROOT}/lib"/*.bash
 do 
+    [[ "$lib_file" == "$appearance_file" ]] && continue
     source "${lib_file}"
 done
-
 
 if [[ -n "${DOTFILES_THEME}" ]]; then  
     source "${DOTFILES_ROOT}"/themes/base.theme.bash

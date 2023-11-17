@@ -1,5 +1,4 @@
 # shellcheck shell=bash
-about-alias 'docker-compose abbreviations'
 
 if _command_exists docker-compose; then
     alias dco="docker-compose"

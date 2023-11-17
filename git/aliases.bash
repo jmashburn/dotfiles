@@ -18,7 +18,6 @@ alias ge='git-edit-new'
 
 
 # shellcheck shell=bash
-about-alias 'common git abbreviations'
 
 alias g='git'
 alias get='git'

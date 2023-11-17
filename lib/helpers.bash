@@ -9,7 +9,6 @@ function _command_exists() {
 	if type -t "$1" > /dev/null; then
 		return 0
 	else
-        printf '%s\n' ${msg}
 		return 1
 	fi
 }

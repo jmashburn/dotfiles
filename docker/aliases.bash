@@ -1,5 +1,4 @@
 # shellcheck shell=bash
-about-alias 'docker abbreviations'
 
 
 if _command_exists docker; then

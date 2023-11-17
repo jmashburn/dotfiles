@@ -9,6 +9,10 @@ export DOTFILES_THEME='bobby'
 # Don't check mail when opening terminal.
 unset MAILCHECK
 
+
+# Load Main - everything below overwrites
+source "$DOTFILES_ROOT"/script/dotfiles.sh
+
 # Stash your enviroment variables in ~/.localrc. This means they'll stay ouf of the main
 # of your dotfiles repos. But you'll have access to them in your scripts
 if [[ -a ~/.localrc ]]
@@ -16,4 +20,3 @@ then
     source ~/.localrc
 fi
 
-source "$DOTFILES_ROOT"/script/dotfiles.sh
