@@ -107,24 +107,14 @@ function _appearance_scm_init() {
 			SVN_EXE=""
 		fi
 	fi
-	echo "----${GIT_EXE}-----"
 	return 0
 }
 _library_finalize_hook+=('_appearance_scm_init')
 
-
 function scm() {
-	echo "SCM"
-	echo ${GIT_EXE}
-
-	if [[ -x "${GIT_EXE-}" ]]; then
-		echo "MADE IT HERE"
-	fi
-
 	if [[ "${SCM_CHECK:-true}" == "false" ]]; then
 		SCM="${SCM_NONE-NONE}"
 	elif [[ -x "${GIT_EXE-}" ]] && _find-in-ancestor '.git' > /dev/null; then
-		echo "HERE"
 		SCM="${SCM_GIT?}"
 	elif [[ -x "${HG_EXE-}" ]] && _find-in-ancestor '.hg' > /dev/null; then
 		SCM="${SCM_HG?}"
@@ -215,6 +205,9 @@ function scm_prompt_info_common() {
 			prompt_info="${SCM}_prompt_info"
 			;;
 	esac
+	#FORCING INTO GIT - REMOVE ONCE YOU"VE FIGURED IT OUT
+	prompt_info="${SCM_GIT}_prompt_info"
+	printf ${prompt_info}
 	_is_function "${prompt_info}" && "${prompt_info}"
 }
 
@@ -247,4 +240,146 @@ function clock_prompt() {
 	if [[ "${show_clock}" == "true" ]]; then
 		echo -ne "${clock_color}${CLOCK_THEME_PROMPT_PREFIX-}${clock_string}${CLOCK_THEME_PROMPT_SUFFIX-}"
 	fi
+}
+
+function user_host_prompt() {
+	if [[ "${THEME_SHOW_USER_HOST:-false}" == "true" ]]; then
+		echo -ne "${USER_HOST_THEME_PROMPT_PREFIX-}\u@${THEME_PROMPT_HOST:-\h}${USER_HOST_THEME_PROMPT_SUFFIX-}"
+	fi
+}
+
+# backwards-compatibility
+function git_prompt_info() {
+	_git-hide-status && return
+	git_prompt_vars
+	echo -ne "${SCM_PREFIX?}${SCM_BRANCH?}${SCM_STATE?}${SCM_SUFFIX?}"
+}
+
+function p4_prompt_info() {
+	p4_prompt_vars
+	echo -ne "${SCM_PREFIX?}${SCM_BRANCH?}:${SCM_CHANGE?}${SCM_STATE?}${SCM_SUFFIX?}"
+}
+
+function svn_prompt_info() {
+	svn_prompt_vars
+	echo -ne "${SCM_PREFIX?}${SCM_BRANCH?}${SCM_STATE?}${SCM_SUFFIX?}"
+}
+
+function hg_prompt_info() {
+	hg_prompt_vars
+	echo -ne "${SCM_PREFIX?}${SCM_BRANCH?}:${SCM_CHANGE#*:}${SCM_STATE?}${SCM_SUFFIX?}"
+}
+
+function scm_char() {
+	scm_prompt_char
+	echo -ne "${SCM_THEME_CHAR_PREFIX?}${SCM_CHAR?}${SCM_THEME_CHAR_SUFFIX?}"
+}
+
+function prompt_char() {
+	scm_char
+}
+
+function git_prompt_minimal_info() {
+	SCM_STATE="${SCM_THEME_PROMPT_CLEAN?}"
+
+	_git-hide-status && return
+
+	SCM_BRANCH="${SCM_THEME_BRANCH_PREFIX-}\$(_git-friendly-ref)"
+
+	if [[ -n "$(_git-status | tail -n1)" ]]; then
+		SCM_DIRTY=1
+		SCM_STATE="${SCM_THEME_PROMPT_DIRTY?}"
+	fi
+
+	# Output the git prompt
+	SCM_PREFIX="${SCM_THEME_PROMPT_PREFIX-}"
+	SCM_SUFFIX="${SCM_THEME_PROMPT_SUFFIX-}"
+	echo -ne "${SCM_PREFIX}${SCM_BRANCH}${SCM_STATE}${SCM_SUFFIX}"
+}
+
+function git_prompt_vars() {
+	if [[ "${Thank:-false}" != "false" ]] && _command_exists gitstatus_query && gitstatus_query && [[ "${VCS_STATUS_RESULT:-}" == "ok-sync" ]]; then
+		# we can use faster gitstatus
+		# use this variable in githelpers and below to choose gitstatus output
+		SCM_GIT_GITSTATUS_RAN=true
+	else
+		SCM_GIT_GITSTATUS_RAN=false
+	fi
+
+	if _git-branch &> /dev/null; then
+		SCM_GIT_DETACHED="false"
+		SCM_BRANCH="${SCM_THEME_BRANCH_PREFIX}\$(_git-friendly-ref)$(_git-remote-info)"
+	else
+		SCM_GIT_DETACHED="true"
+
+		local detached_prefix
+		if _git-tag &> /dev/null; then
+			detached_prefix="${SCM_THEME_TAG_PREFIX}"
+		else
+			detached_prefix="${SCM_THEME_DETACHED_PREFIX}"
+		fi
+		SCM_BRANCH="${detached_prefix}\$(_git-friendly-ref)"
+	fi
+
+	if [[ "${SCM_GIT_GITSTATUS_RAN:-}" == "true" ]]; then
+		commits_behind="${VCS_STATUS_COMMITS_BEHIND?}"
+		commits_ahead="${VCS_STATUS_COMMITS_AHEAD?}"
+	else
+		IFS=$'\t' read -r commits_behind commits_ahead <<< "$(_git-upstream-behind-ahead)"
+	fi
+	if [[ "${commits_ahead}" -gt 0 ]]; then
+		SCM_BRANCH+="${SCM_GIT_AHEAD_BEHIND_PREFIX_CHAR}${SCM_GIT_AHEAD_CHAR}"
+		[[ "${SCM_GIT_SHOW_COMMIT_COUNT}" == "true" ]] && SCM_BRANCH+="${commits_ahead}"
+	fi
+	if [[ "${commits_behind}" -gt 0 ]]; then
+		SCM_BRANCH+="${SCM_GIT_AHEAD_BEHIND_PREFIX_CHAR}${SCM_GIT_BEHIND_CHAR}"
+		[[ "${SCM_GIT_SHOW_COMMIT_COUNT}" == "true" ]] && SCM_BRANCH+="${commits_behind}"
+	fi
+
+	if [[ "${SCM_GIT_SHOW_STASH_INFO}" == "true" ]]; then
+		local stash_count
+		if [[ "${SCM_GIT_GITSTATUS_RAN}" == "true" ]]; then
+			stash_count="${VCS_STATUS_STASHES?}"
+		else
+			stash_count="$(git stash list 2> /dev/null | wc -l | tr -d ' ')"
+		fi
+		[[ "${stash_count}" -gt 0 ]] && SCM_BRANCH+=" ${SCM_GIT_STASH_CHAR_PREFIX}${stash_count}${SCM_GIT_STASH_CHAR_SUFFIX}"
+	fi
+
+	SCM_STATE="${GIT_THEME_PROMPT_CLEAN:-${SCM_THEME_PROMPT_CLEAN:-}}"
+	if ! _git-hide-status; then
+		if [[ "${SCM_GIT_GITSTATUS_RAN:-}" == "true" ]]; then
+			untracked_count="${VCS_STATUS_NUM_UNTRACKED?}"
+			unstaged_count="${VCS_STATUS_NUM_UNSTAGED?}"
+			staged_count="${VCS_STATUS_NUM_STAGED?}"
+		else
+			IFS=$'\t' read -r untracked_count unstaged_count staged_count < <(_git-status-counts)
+		fi
+		if [[ "${untracked_count}" -gt 0 || "${unstaged_count}" -gt 0 || "${staged_count}" -gt 0 ]]; then
+			SCM_DIRTY=1
+			if [[ "${SCM_GIT_SHOW_DETAILS}" == "true" ]]; then
+				[[ "${staged_count}" -gt 0 ]] && SCM_BRANCH+=" ${SCM_GIT_STAGED_CHAR}${staged_count}" && SCM_DIRTY=3
+				[[ "${unstaged_count}" -gt 0 ]] && SCM_BRANCH+=" ${SCM_GIT_UNSTAGED_CHAR}${unstaged_count}" && SCM_DIRTY=2
+				[[ "${untracked_count}" -gt 0 ]] && SCM_BRANCH+=" ${SCM_GIT_UNTRACKED_CHAR}${untracked_count}" && SCM_DIRTY=1
+			fi
+			SCM_STATE="${GIT_THEME_PROMPT_DIRTY:-${SCM_THEME_PROMPT_DIRTY?}}"
+		fi
+	fi
+
+	# no if for gitstatus here, user extraction is not supported by it
+	[[ "${SCM_GIT_SHOW_CURRENT_USER}" == "true" ]] && SCM_BRANCH+="$(git_user_info)"
+
+	SCM_PREFIX="${GIT_THEME_PROMPT_PREFIX:-${SCM_THEME_PROMPT_PREFIX-}}"
+	SCM_SUFFIX="${GIT_THEME_PROMPT_SUFFIX:-${SCM_THEME_PROMPT_SUFFIX-}}"
+
+	SCM_CHANGE=$(_git-short-sha 2> /dev/null || true)
+}
+
+function git_user_info() {
+	local current_user
+	# support two or more initials, set by 'git pair' plugin
+	current_user="$(git config user.initials | sed 's% %+%')"
+	# if `user.initials` weren't set, attempt to extract initials from `user.name`
+	[[ -z "${current_user}" ]] && current_user=$(printf "%s" "$(for word in $(git config user.name | PERLIO=:utf8 perl -pe '$_=lc'); do printf "%s" "${word:0:1}"; done)")
+	[[ -n "${current_user}" ]] && printf "%s" "${SCM_THEME_CURRENT_USER_PREFFIX-}${current_user}${SCM_THEME_CURRENT_USER_SUFFIX-}"
 }

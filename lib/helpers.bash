@@ -37,7 +37,7 @@ function _get-component-name-from-path() {
 	# filename without path
 	filename="${1##*/}"
 	# filename without path or priority
-	filename="${filename##*"${BASH_IT_LOAD_PRIORITY_SEPARATOR?}"}"
+	filename="${filename##*"${_LOAD_PRIORITY_SEPARATOR?}"}"
 	# filename without path, priority or extension
 	echo "${filename%.*.bash}"
 }
@@ -99,7 +99,17 @@ function _fgrep() {
 }
 
 # Runs `grep` with extended regular expressions (-E)
-function _bash-it-egrep() {
+function _egrep() {
 	: "${_GREP:=$(type -P grep)}"
 	"${_GREP:-/usr/bin/grep}" -E "$@"
+}
+
+function _pathmunge() {
+    if ! echo $PATH | /bin/egrep -q "(^|:)$1($|:)" ; then
+        if [ "$2" = "after" ] ; then
+            PATH=$PATH:$1
+        else
+            PATH=$1:$PATH
+        fi
+    fi
 }
