@@ -4,7 +4,7 @@ export DOTFILES_ROOT=$HOME/.dotfiles
 # Load a custom theme file.
 # Leave empty to disable theming.
 # location /.dotfiles/themes/
-export DOTFILES_THEME='bobby'
+export DOTFILES_THEME='90210'
 
 # Don't check mail when opening terminal.
 unset MAILCHECK

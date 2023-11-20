@@ -94,11 +94,37 @@ RBFU_THEME_PROMPT_SUFFIX='|'
 : "${SVN_EXE:=${SCM_SVN?}}"
 : "${P4_EXE:=${SCM_P4?}}"
 
+function _appearance_scm_init() {
+	GIT_EXE="$(type -P "${SCM_GIT:-git}" || true)"
+	HG_EXE="$(type -P "${SCM_HG:-hg}" || true)"
+	SVN_EXE="$(type -P "${SCM_SVN:-svn}" || true)"
+	P4_EXE="$(type -P "${SCM_P4:-p4}" || true)"
+	# Check for broken SVN exe that is caused by some versions of Xcode.
+	# See https://github.com/Bash-it/bash-it/issues/1612 for more details.
+	if [[ -x "${SVN_EXE-}" && -x "${SVN_EXE%/svn}/xcrun" ]]; then
+		if ! "${SVN_EXE}" --version > /dev/null 2>&1; then
+			# Unset the SVN exe variable so that SVN commands are avoided.
+			SVN_EXE=""
+		fi
+	fi
+	echo "----${GIT_EXE}-----"
+	return 0
+}
+_library_finalize_hook+=('_appearance_scm_init')
+
 
 function scm() {
+	echo "SCM"
+	echo ${GIT_EXE}
+
+	if [[ -x "${GIT_EXE-}" ]]; then
+		echo "MADE IT HERE"
+	fi
+
 	if [[ "${SCM_CHECK:-true}" == "false" ]]; then
 		SCM="${SCM_NONE-NONE}"
 	elif [[ -x "${GIT_EXE-}" ]] && _find-in-ancestor '.git' > /dev/null; then
+		echo "HERE"
 		SCM="${SCM_GIT?}"
 	elif [[ -x "${HG_EXE-}" ]] && _find-in-ancestor '.hg' > /dev/null; then
 		SCM="${SCM_HG?}"

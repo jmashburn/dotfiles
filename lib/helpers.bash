@@ -1,10 +1,5 @@
 
 function _command_exists() {
-	# _about 'checks for existence of a command'
-	# _param '1: command to check'
-	# _param '2: (optional) log message to include when command not found'
-	# _example '$ _command_exists ls && echo exists'
-	# _group 'lib'
 	local msg="${2:-Command '$1' does not exist}"
 	if type -t "$1" > /dev/null; then
 		return 0
@@ -14,12 +9,6 @@ function _command_exists() {
 }
 
 function _is_function() {
-	# _about 'sets $? to true if parameter is the name of a function'
-	# _param '1: name of alleged function'
-	# _param '2: (optional) log message to include when function not found'
-	# _group 'lib'
-	# _example '$ _is_function ls && echo exists'
-	# _group 'lib'
 	local msg="${2:-Function '$1' does not exist}"
 	if LC_ALL=C type -t "$1" | _fgrep -q 'function'; then
 		return 0
@@ -43,8 +32,74 @@ function _find-in-ancestor() (
 	return 1
 )
 
+function _get-component-name-from-path() {
+	local filename
+	# filename without path
+	filename="${1##*/}"
+	# filename without path or priority
+	filename="${filename##*"${BASH_IT_LOAD_PRIORITY_SEPARATOR?}"}"
+	# filename without path, priority or extension
+	echo "${filename%.*.bash}"
+}
+
+function _get-component-type-from-path() {
+	local filename
+	# filename without path
+	filename="${1##*/}"
+	# filename without extension
+	filename="${filename%.bash}"
+	# extension without priority or name
+	filename="${filename##*.}"
+	echo "${filename}"
+}
+
+# This function searches an array for an exact match against the term passed
+# as the first argument to the function. This function exits as soon as
+# a match is found.
+#
+# Returns:
+#   0 when a match is found, otherwise 1.
+#
+# Examples:
+#   $ declare -a fruits=(apple orange pear mandarin)
+#
+#   $ _array-contains-element apple "@{fruits[@]}" && echo 'contains apple'
+#   contains apple
+#
+#   $ if _array-contains-element pear "${fruits[@]}"; then
+#       echo "contains pear!"
+#     fi
+#   contains pear!
+#
+#
+function _array-contains-element() {
+	local e element="${1?}"
+	shift
+	for e in "$@"; do
+		[[ "$e" == "${element}" ]] && return 0
+	done
+	return 1
+}
+
+# Dedupe an array (without embedded newlines).
+function _array-dedup() {
+	printf '%s\n' "$@" | sort -u
+}
+
+# Runs `grep` with *just* the provided arguments
+function _grep() {
+	: "${_GREP:=$(type -P grep)}"
+	"${_GREP:-/usr/bin/grep}" "$@"
+}
+
 # Runs `grep` with fixed-string expressions (-F)
 function _fgrep() {
-	: "${BASH_IT_GREP:=$(type -P grep)}"
-	"${BASH_IT_GREP:-/usr/bin/grep}" -F "$@"
+	: "${_GREP:=$(type -P grep)}"
+	"${_GREP:-/usr/bin/grep}" -F "$@"
+}
+
+# Runs `grep` with extended regular expressions (-E)
+function _bash-it-egrep() {
+	: "${_GREP:=$(type -P grep)}"
+	"${_GREP:-/usr/bin/grep}" -E "$@"
 }
