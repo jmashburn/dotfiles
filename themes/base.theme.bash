@@ -53,18 +53,6 @@ SCM_GIT_STAGED_CHAR="S:"
 SCM_GIT_STASH_CHAR_PREFIX="{"
 SCM_GIT_STASH_CHAR_SUFFIX="}"
 
-SCM_P4='p4'
-SCM_P4_CHAR='⌛'
-SCM_P4_CHANGES_CHAR='C:'
-SCM_P4_DEFAULT_CHAR='D:'
-SCM_P4_OPENED_CHAR='O:'
-
-SCM_HG='hg'
-SCM_HG_CHAR='☿'
-
-SCM_SVN='svn'
-SCM_SVN_CHAR='⑆'
-
 SCM_NONE='NONE'
 SCM_NONE_CHAR='○'
 
@@ -90,23 +78,9 @@ RBFU_THEME_PROMPT_PREFIX=' |'
 RBFU_THEME_PROMPT_SUFFIX='|'
 
 : "${GIT_EXE:=${SCM_GIT?}}"
-: "${HG_EXE:=${SCM_HG?}}"
-: "${SVN_EXE:=${SCM_SVN?}}"
-: "${P4_EXE:=${SCM_P4?}}"
 
 function _appearance_scm_init() {
 	GIT_EXE="$(type -P "${SCM_GIT:-git}" || true)"
-	HG_EXE="$(type -P "${SCM_HG:-hg}" || true)"
-	SVN_EXE="$(type -P "${SCM_SVN:-svn}" || true)"
-	P4_EXE="$(type -P "${SCM_P4:-p4}" || true)"
-	# Check for broken SVN exe that is caused by some versions of Xcode.
-	# See https://github.com/Bash-it/bash-it/issues/1612 for more details.
-	if [[ -x "${SVN_EXE-}" && -x "${SVN_EXE%/svn}/xcrun" ]]; then
-		if ! "${SVN_EXE}" --version > /dev/null 2>&1; then
-			# Unset the SVN exe variable so that SVN commands are avoided.
-			SVN_EXE=""
-		fi
-	fi
 	return 0
 }
 _library_finalize_hook+=('_appearance_scm_init')
@@ -116,12 +90,6 @@ function scm() {
 		SCM="${SCM_NONE-NONE}"
 	elif [[ -x "${GIT_EXE-}" ]] && _find-in-ancestor '.git' > /dev/null; then
 		SCM="${SCM_GIT?}"
-	elif [[ -x "${HG_EXE-}" ]] && _find-in-ancestor '.hg' > /dev/null; then
-		SCM="${SCM_HG?}"
-	elif [[ -x "${SVN_EXE-}" ]] && _find-in-ancestor '.svn' > /dev/null; then
-		SCM="${SCM_SVN?}"
-	elif [[ -x "${P4_EXE-}" && -n "$(p4 set P4CLIENT 2> /dev/null)" ]]; then
-		SCM="${SCM_P4?}"
 	else
 		SCM="${SCM_NONE-NONE}"
 	fi
@@ -147,15 +115,6 @@ function scm_prompt_char() {
 	case ${SCM?} in
 		"${SCM_GIT?}")
 			SCM_CHAR="${SCM_GIT_CHAR?}"
-			;;
-		"${SCM_HG?}")
-			SCM_CHAR="${SCM_HG_CHAR?}"
-			;;
-		"${SCM_SVN?}")
-			SCM_CHAR="${SCM_SVN_CHAR?}"
-			;;
-		"${SCM_P4?}")
-			SCM_CHAR="${SCM_P4_CHAR?}"
 			;;
 		*)
 			SCM_CHAR="${SCM_NONE_CHAR:-}"
@@ -206,8 +165,7 @@ function scm_prompt_info_common() {
 			;;
 	esac
 	#FORCING INTO GIT - REMOVE ONCE YOU"VE FIGURED IT OUT
-	prompt_info="${SCM_GIT}_prompt_info"
-	printf ${prompt_info}
+	#prompt_info="${SCM_GIT}_prompt_info"
 	_is_function "${prompt_info}" && "${prompt_info}"
 }
 
@@ -253,21 +211,6 @@ function git_prompt_info() {
 	_git-hide-status && return
 	git_prompt_vars
 	echo -ne "${SCM_PREFIX?}${SCM_BRANCH?}${SCM_STATE?}${SCM_SUFFIX?}"
-}
-
-function p4_prompt_info() {
-	p4_prompt_vars
-	echo -ne "${SCM_PREFIX?}${SCM_BRANCH?}:${SCM_CHANGE?}${SCM_STATE?}${SCM_SUFFIX?}"
-}
-
-function svn_prompt_info() {
-	svn_prompt_vars
-	echo -ne "${SCM_PREFIX?}${SCM_BRANCH?}${SCM_STATE?}${SCM_SUFFIX?}"
-}
-
-function hg_prompt_info() {
-	hg_prompt_vars
-	echo -ne "${SCM_PREFIX?}${SCM_BRANCH?}:${SCM_CHANGE#*:}${SCM_STATE?}${SCM_SUFFIX?}"
 }
 
 function scm_char() {
