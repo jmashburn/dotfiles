@@ -139,6 +139,42 @@ install_dotfiles () {
   done
 }
 
+displayUsageAndExit() {
+    echo "dot -- dotfiles bootstrap"
+    echo ""
+    echo "Usage: bootstrap [options]"
+    echo ""
+    echo "Options:"
+    echo " -O Overwrite All"
+    echo " -B Backup All"
+    echo " -S Skip ALL"
+    echo " -h, --help Show this message and exit"
+    exit
+}
+
+
+while test $# -gt 0; do
+    case "$1" in
+        "-h"|"--help")
+            displayUsageAndExit
+            ;;
+        "-O")
+            action="O"
+            ;;
+        "-B")
+            action="B"
+            ;;
+        "-S")
+            action="S"
+            ;;
+        *)
+            echo "Invalid option: $1"
+            displayUsageAndExit
+            ;;
+    esac
+    shift
+done
+
 setup_gitconfig
 install_dotfiles
 
