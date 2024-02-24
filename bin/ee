@@ -1,0 +1,7 @@
+#!/bin/bash
+#
+#
+# Quick shortcut to an editor in a prompt
+#
+#
+exec "$EDITOR --wait" $@

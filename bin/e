@@ -1,0 +1,7 @@
+#!/bin/bash
+#
+#
+# Quick shortcut to an editory
+#
+#
+exec "$EDITOR" "${1:-.}"

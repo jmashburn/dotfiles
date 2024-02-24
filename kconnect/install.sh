@@ -14,7 +14,7 @@ then
     mkdir $BIN_DIR
 fi
 
-if test ! $(which kcaonnect)
+if test ! $(which kconnect)
 then
     echo "   Installing kConnect"
     cd $BIN_DIR

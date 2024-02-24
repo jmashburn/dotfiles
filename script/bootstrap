@@ -54,7 +54,6 @@ link_file () {
   local src=$1 dst=$2
 
   local overwrite= backup= skip=
-  local action=
 
   if [ -f "$dst" -o -d "$dst" -o -L "$dst" ]
   then
@@ -73,7 +72,10 @@ link_file () {
 
         user "File already exists: $dst ($(basename "$src")), what do you want to do?\n\
         [s]kip, [S]kip all, [o]verwrite, [O]verwrite all, [b]ackup, [B]ackup all?"
-        read -n 1 action
+
+        if [[ -z "$action" ]]; then
+          read -n 1 action
+        fi
 
         case "$action" in
           o )
@@ -141,7 +143,7 @@ setup_gitconfig
 install_dotfiles
 
 # If we're on a Mac, let's install and setup homebrew.
-if [ "$(uname -s)" == "Darwin" ]
+if [ "$(uname -s)" == "Linux" ]
 then
   info "installing dependencies"
   if source bin/dot | while read -r data; do info "$data"; done

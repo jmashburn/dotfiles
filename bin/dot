@@ -1,0 +1,42 @@
+#!/bin/bash
+#
+# dot
+#
+# `dot` handles installation, updates.  Run it to make sure youre update to the latest
+#
+
+set -e 
+
+parentDirectory="$(cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P)"
+dotfilesDirectory="$(cd "$( dirname "$parentDirectory" )" && pwd -P)"
+
+displayUsageAndExit() {
+    echo "dot -- dotfiles management"
+    echo ""
+    echo "Usage: dot [options]"
+    echo ""
+    echo "Options:"
+    echo " -e, --edit Open dotfiles directory for editing"
+    echo " -h, --help Show this message and exit"
+    exit
+}
+
+while test $# -gt 0; do
+    case "$1" in
+        "-h"|"--help")
+            displayUsageAndExit
+            ;;
+        "-e"|"--edit")
+            exit "$EDITOR" "$dotfilesDirectory"
+            exit
+            ;;
+        *)
+            echo "Invalid option: $1"
+            displayUsageAndExit
+            ;;
+    esac
+    shift
+done
+
+echo "> script/install"
+$dotfilesDirectory/script/install
