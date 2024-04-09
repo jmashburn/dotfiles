@@ -158,7 +158,6 @@ install_dotfiles () {
   done
 }
 
-<<<<<<< Updated upstream
 displayUsageAndExit() {
     echo "dot -- dotfiles bootstrap"
     echo ""
@@ -195,10 +194,7 @@ while test $# -gt 0; do
     shift
 done
 
-setup_gitconfig
-=======
 setup_gitconfig $1
->>>>>>> Stashed changes
 install_dotfiles
 
 # If we're on a Mac, let's install and setup homebrew.
