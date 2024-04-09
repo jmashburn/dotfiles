@@ -28,7 +28,14 @@ fail () {
 }
 
 setup_gitconfig () {
-  if ! [ -f git/gitconfig.local.symlink ]
+  if [ -n "$1" ]
+  then 
+      git_profile=$1
+  else
+      git_profile='local'
+  fi 
+
+  if ! [ -f git/gitconfig."$git_profile".symlink ]
   then
     info 'setup gitconfig'
 
@@ -38,12 +45,12 @@ setup_gitconfig () {
       git_credential='osxkeychain'
     fi
 
-    user ' - What is your github author name?'
+    user " - What is your github author name for $git_profile?"
     read -e git_authorname
-    user ' - What is your github author email?'
+    user " - What is your github author email for $git_profile?"
     read -e git_authoremail
 
-    sed -e "s/AUTHORNAME/$git_authorname/g" -e "s/AUTHOREMAIL/$git_authoremail/g" -e "s/GIT_CREDENTIAL_HELPER/$git_credential/g" git/gitconfig.local.symlink.example > git/gitconfig.local.symlink
+    sed -e "s/AUTHORNAME/$git_authorname/g" -e "s/AUTHOREMAIL/$git_authoremail/g" -e "s/GIT_CREDENTIAL_HELPER/$git_credential/g" git/gitconfig.local.symlink.example > git/gitconfig.$git_profile.symlink
 
     success 'gitconfig'
   fi
@@ -134,11 +141,24 @@ install_dotfiles () {
 
   for src in $(find -H "$DOTFILES_ROOT" -maxdepth 2 -name '*.symlink' -not -path '*.git*')
   do
+    if [ -d "$src" ]; then
+        if [ ! -L "$HOME/.$(basename "${src%.*}")" ]; then
+            for file in $(find -H "$src" -maxdepth 2 -name '*.symlink' -not -path '*.git*')
+            do
+                dst=$HOME/.$(basename "${src%.*}")/$(basename ${file%.*})
+                link_file "$file" "$dst"
+            done
+            continue
+        else
+            continue
+        fi
+    fi
     dst="$HOME/.$(basename "${src%.*}")"
     link_file "$src" "$dst"
   done
 }
 
+<<<<<<< Updated upstream
 displayUsageAndExit() {
     echo "dot -- dotfiles bootstrap"
     echo ""
@@ -176,6 +196,9 @@ while test $# -gt 0; do
 done
 
 setup_gitconfig
+=======
+setup_gitconfig $1
+>>>>>>> Stashed changes
 install_dotfiles
 
 # If we're on a Mac, let's install and setup homebrew.
