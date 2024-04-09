@@ -1,6 +1,7 @@
 # Local/private config goes in the include
 [include]
     path = ~/.gitconfig.local
+    path = ~/.gitconfig.custom
 [hub]
 	protocol = https
 [alias]
@@ -33,11 +34,12 @@
     default = simple
 [init]
 	defaultBranch = main
-
 [url "https://github.com/"]
-    insteadof = git://github.com/
+	insteadof = git://github.com/
 [credential]
 	helper = /usr/local/bin/git-credential-manager
     credentialStore = gpg
 [credential "https://dev.azure.com"]
 	useHttpPath = true
+[http]
+	emptyauth = true
