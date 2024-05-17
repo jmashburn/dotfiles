@@ -1,7 +1,7 @@
 
 # Pass AutoCompleation
 
-if [ -f '/opt/pass/completion/pass.bash-completion' ]
+if [ -f "$DOTFILES_ROOT/vendor/github.com/jmashburn/pass/completion/pass.bash-completion" ]
 then
-    source /opt/pass/completion/pass.bash-completion
+    source "$DOTFILES_ROOT/vendor/github.com/jmashburn/pass/completion/pass.bash-completion"
 fi

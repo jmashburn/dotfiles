@@ -1,1 +1,1 @@
-export PATH="$HOME/.dotfiles/vendor/pass:$PATH"
+export PATH="$DOTFILES_ROOT/vendor/github.com/jmashburn/pass:$PATH"
