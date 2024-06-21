@@ -204,6 +204,15 @@ done
 setup_gitconfig $1
 install_dotfiles
 
+# If the .bashrc isn't linked then it won't load the dotfiles.
+# Manually load in current .bashrc
+if [ ! -L $HOME/.bashrc ]
+then
+    echo "export DOTFILES_ROOT=$DOTFILES_ROOT" >> $HOME/.bashrc
+    echo "source $DOTFILES_ROOT/script/dotfiles.sh" >> $HOME/.bashrc
+fi 
+
+
 # If we're on a Mac, let's install and setup homebrew.
 if [ "$(uname -s)" == "Linux" ]
 then
