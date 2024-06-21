@@ -37,11 +37,11 @@ then
         echo "arch: " $arch
 
         awscli_url=$(echo "https://awscli.amazonaws.com/awscli-exe-linux-ARCH.zip" | sed "s/ARCH/$arch/" )
-        echo "awscli url: $awscli_url"
+        echo "Downloading - awscli url: $awscli_url"
 
         pwd
         # download
-        curl -L $awscli_url -o awscliv2.zip
+        curl -fsSL $awscli_url -o awscliv2.zip
 
         # unzip
         unzip -qq awscliv2.zip -d aws_install
