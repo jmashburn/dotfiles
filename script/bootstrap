@@ -28,32 +28,35 @@ fail () {
 }
 
 setup_gitconfig () {
-  if [ -n "$1" ]
+  if [ "$skip_all" == "false" ]
   then 
-      git_profile=$1
-  else
-      git_profile='local'
-  fi 
+    if [ -n "$1" ]
+    then 
+        git_profile=$1
+    else
+        git_profile='local'
+    fi 
 
-  if ! [ -f git/gitconfig."$git_profile".symlink ]
-  then
-    info 'setup gitconfig'
-
-    git_credential='cache'
-    if [ "$(uname -s)" == "Darwin" ]
+    if ! [ -f git/gitconfig."$git_profile".symlink ]
     then
-      git_credential='osxkeychain'
+        info 'setup gitconfig'
+
+        git_credential='cache'
+        if [ "$(uname -s)" == "Darwin" ]
+        then
+            git_credential='osxkeychain'
+        fi
+
+        user " - What is your github author name for $git_profile?"
+        read -e git_authorname
+        user " - What is your github author email for $git_profile?"
+        read -e git_authoremail
+
+        sed -e "s/AUTHORNAME/$git_authorname/g" -e "s/AUTHOREMAIL/$git_authoremail/g" -e "s/GIT_CREDENTIAL_HELPER/$git_credential/g" git/gitconfig.local.symlink.example > git/gitconfig.$git_profile.symlink
+
+        success 'gitconfig'
     fi
-
-    user " - What is your github author name for $git_profile?"
-    read -e git_authorname
-    user " - What is your github author email for $git_profile?"
-    read -e git_authoremail
-
-    sed -e "s/AUTHORNAME/$git_authorname/g" -e "s/AUTHOREMAIL/$git_authoremail/g" -e "s/GIT_CREDENTIAL_HELPER/$git_credential/g" git/gitconfig.local.symlink.example > git/gitconfig.$git_profile.symlink
-
-    success 'gitconfig'
-  fi
+  fi 
 }
 
 
