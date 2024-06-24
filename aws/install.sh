@@ -7,6 +7,7 @@
 #
 set -e
 BIN_DIR="$HOME/.bin"
+source $DOTFILES_ROOT/aws/path.bash
 
 if [ ! -d $BIN_DIR ]; then
     mkdir -p $BIN_DIR
