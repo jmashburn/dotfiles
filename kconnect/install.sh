@@ -8,6 +8,8 @@
 
 # Check for kconnect
 BIN_DIR="$HOME/.bin/"
+source $DOTFILES_ROOT/kconnect/path.bash
+
 
 if [[ ! -d $BIN_DIR ]]
 then
