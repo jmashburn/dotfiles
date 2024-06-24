@@ -6,7 +6,6 @@ set noerrorbells
 set history=2500
 
 set dir=~/.tmp " Store all swafiles in the ~/tmp to avoid cluttering other folders with .swp files
-syntax on
 filetype plugin on
 
 set ruler " Always show current positions along the bottom
@@ -28,11 +27,12 @@ set ffs=unix,dos,mac "support all threem in this order
 
 set iskeyword+=_,$,@,%,#,- "none of these should be workd deviders
 
+if has('eval')
 set statusline=%<%{StatusFN(0)}%1*%{StatusFN(1)}%m%0*\ %F%m%r%h%w\ [FORMAT=%{&ff}]\ [TYPE=%Y]\ [\%03.3b\x10]\ [\%02.2B\x16]\ [LEN=%L]\ %=%04l,%03v\ [%p%%]
-
 function StatusFN(changed) 
 	if &mod == a:changed | return expand('%') | else | return '' | endif
 endfunction
+endif
 
 highlight StatusLine term=bold,reverse cterm=bold,reverse ctermfg=0 ctermbg=4 guifg=#ffffff guibg=#000000
 
@@ -76,7 +76,9 @@ set ruler
 set showmatch matchtime=3
 set formatoptions=tcqor
 set whichwrap=b,s,<,>,[,]
+if has('eval')
 syntax on
+endif
 
 " The past option is intended for invoking temprarily while pasting in text.
 " It avoids things like autoindeting causeing .stepped. text.  This defines the \tp
