@@ -201,6 +201,7 @@ while test $# -gt 0; do
     shift
 done
 
+
 setup_gitconfig $1
 install_dotfiles
 
