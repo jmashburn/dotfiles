@@ -136,8 +136,8 @@ link_file () {
 
   if [ "$skip" != "true" ]  # "false" or empty
   then
-    ln -s "$1" "$2"
-    success "linked $1 to $2"
+    ln -s "$src" "$dst"
+    success "linked $src to $dst"
   fi
 }
 
@@ -152,7 +152,8 @@ install_dotfiles () {
         if [ ! -L "$HOME/.$(basename "${src%.*}")" ]; then
             for file in $(find -H "$src" -maxdepth 2 -name '*.symlink' -not -path '*.git*')
             do
-                dst=$HOME/.$(basename "${src%.*}")/$(basename ${file%.*})
+                #dst=$HOME/.$(basename "${src%.*}")/$(basename ${file%.*})
+                dst=$HOME/.$(basename "${src%.*}")
                 link_file "$file" "$dst"
             done
             continue
