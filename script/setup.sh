@@ -11,4 +11,4 @@ parentDirectory="$(cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P)"
 dotfilesDirectory="$(cd "$( dirname "$parentDirectory" )" && pwd -P)"
 
 echo "> script/bootstrap"
-$dotfilesDirectory/script/bootstrap -B
+$dotfilesDirectory/script/bootstrap -S
