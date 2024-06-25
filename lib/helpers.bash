@@ -105,7 +105,7 @@ function _egrep() {
 }
 
 function _pathmunge() {
-    if ! echo $PATH | /usr/bin/egrep "(^|:)$1($|:)" ; then
+    if ! echo $PATH | egrep "(^|:)$1($|:)" ; then
         if [ "$2" = "after" ] ; then
             PATH=$PATH:$1
         else
