@@ -5,6 +5,7 @@
 cd "$(dirname "$0")/.."
 DOTFILES_ROOT=$(pwd -P)
 
+export DOTFILE_ROOT=$DOTFILES_ROOT
 set -e
 
 echo ''
