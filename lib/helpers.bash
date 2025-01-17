@@ -245,3 +245,26 @@ function _pathmunge() {
         fi
     fi
 }
+
+# autoload bash scripts. Much faster than `source script.sh`
+# usage: autoload script.sh        
+function autoload() {
+    [ -f "$1" ] || { echo "Usage ${FUNCNAME[0]} <filename>"; return 1;}
+    filename="$1"
+    loadname="$(sed 's:\..*::' <<< $(basename $filename))"
+    if [ -z "$(eval echo \${${loadname}_loaded})" ]; then
+        functions=$(command grep -o "^[a-zA-Z0-9_:]* *()" $filename | sed 's/()//')
+        for f in $functions; do
+            eval "
+                $f() {
+                    if [ \"$(eval echo \${${loadname}_loaded})\" != 2 ]; then
+                        . $filename
+                        eval ${loadname}_loaded=2
+                        eval $f \$@
+                    fi
+                }"
+        done
+        eval ${loadname}_loaded=1
+    fi
+    unset loadname filename
+}
