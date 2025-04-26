@@ -15,7 +15,7 @@ fi
 
 VER=6.1.0.4477
 [[ -x /usr/bin/wget ]]&& download_command="wget --quiet --show-progress --output-document" || download_command="curl --location --output"
-[[ -x ${BIN_DIR}/sonar-scanner ]]&& [[ "x$(${BIN_DIR}/sonar-scanner --version | grep 'SonarScanner' | awk '{print $NF}')" == "x${VER}" ]]&& return 0
+[[ -x ${BIN_DIR}/sonar-scanner ]]&& [[ "x$(${BIN_DIR}/sonar-scanner --version | grep 'SonarScanner' | awk '{print $NF}')" == "x${VER}" ]]&& exit 0
 echo -n "Downloading sonar-scanner-cli-$VER-linux-"
 
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then
