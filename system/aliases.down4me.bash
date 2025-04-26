@@ -3,5 +3,5 @@ function down4me() {
 	#param '1: website url'
 	#example '$ down4me http://www.google.com'
 	#group 'base'
-	curl -Ls "http://downforeveryoneorjustme.com/$1" | sed '/N, we are not/!d;s/<[^>]*>//g'
+	curl -Ls "http://downforeveryoneorjustme.com/$1" | sed '/No, we are not/!d;s/<[^>]*>//g'
 }
