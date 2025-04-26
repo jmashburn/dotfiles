@@ -7,7 +7,7 @@
 #
 
 # Check for kconnect
-BIN_DIR="$HOME/.bin/"
+BIN_DIR="$HOME/.local/bin/"
 source $DOTFILES_ROOT/kconnect/path.bash
 
 
