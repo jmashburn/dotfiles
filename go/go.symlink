@@ -1,0 +1,5 @@
+# GoLang
+export GOROOT=/home/${USER}/.local/bin/go
+export PATH=$GOROOT/bin:$PATH
+export GOPATH=/home/${USER}/.local/bin/.go
+export PATH=$GOPATH/bin:$PATH
