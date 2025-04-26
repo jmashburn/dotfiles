@@ -1,5 +1,5 @@
 # GoLang
-export GOROOT=/home/${USER}/.local/bin/go
+export GOROOT=${HOME}/.local/go
 export PATH=$GOROOT/bin:$PATH
-export GOPATH=/home/${USER}/.local/bin/.go
+export GOPATH=${HOME}/.local/go/bin/.go
 export PATH=$GOPATH/bin:$PATH
