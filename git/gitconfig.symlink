@@ -2,105 +2,127 @@
 [include]
     path = ~/.gitconfig.local
     path = ~/.gitconfig.custom
-[hub]
-	protocol = https
-[alias]
-    co = checkout
-    promote = !$BASH/bin/git-promote
-    wtf     = !$BASH/bin/git-wtf
-    rank-contributors = !$BASH/bin/git-rank-contributors
-    count   = !git shortlog -sn
-[color]
-	diff = auto
-	status = auto
-	branch = auto
-	ui = true
-[core]
-    compression = 9
-    whitespace = error
-    preloadindex = true
-    excludesfile = ~/.gitignore
-    editor = vim
-[apply]
-	whitespace = nowarn
-[mergetool]
-	keepBackup = false
-[difftool]
-    prompt = false
+
 [advice]
     addEmptyPathspec = false
     pushNonFastForward = false
     statusHints = false
-[help]
-    autocorrect = 1
+
+[alias]
+    co = checkout
+    count = !git shortlog -sn
+    promote = !$BASH/bin/git-promote
+    rank-contributors = !$BASH/bin/git-rank-contributors
+    wtf = !$BASH/bin/git-wtf
+
+[apply]
+    whitespace = nowarn
+
+[branch]
+    sort = -committerdate
+
+[color]
+    branch = auto
+    diff = auto
+    status = auto
+    ui = true
+
+[color "branch"]
+    current = magenta
+    local = default
+    plain = blue
+    remote = yellow
+    upstream = green
+
+[color "decorate"]
+    HEAD = red
+    branch = blue
+    remoteBranch = magenta
+    tag = yellow
+
+[color "diff"]
+    context = yellow reverse
+    frag = magenta
+    meta = black bold
+    old = red
+
+[commit]
+    gpgSign = false
+    template = ~/.gitmessage
+
+[core]
+    compression = 9
+    editor = vim
+    excludesfile = ~/.gitignore
+    preloadindex = true
+    whitespace = error
+
+[credential]
+    credentialStore = gpg
+    helper = /usr/local/bin/git-credential-manager
+
+[credential "https://dev.azure.com"]
+    useHttpPath = true
+
 [diff]
     context = 3
-    renames = copies
     interHunkContext = 10
-[pager]
-    diff = diff-so-fancy | less --tabs=4 -RFX
-    branch = false
-    tag = false
+    renames = copies
+
 [diff-so-fancy]
     markEmptyLines = false
 
-[commit]
-    template = ~/.gitmessage
-    gpgSign     = false
-[color "diff"]
-    meta    = black bold
-    frag    = magenta
-    context = yellow reverse
-    old     = red
-[color "branch"]
-    current = magenta
-    local   = default
-    remote  = yellow
-    upstream = green
-    plain   = blue
-[branch]
-    sort = -committerdate
-[tag]
-    sort = -taggerdate
+[difftool]
+    prompt = false
+
+[help]
+    autocorrect = 1
+
+[hub]
+    protocol = https
+
+[http]
+    emptyauth = true
+
+[init]
+    defaultBranch = main
+
 [interactive]
-    diffFilter  = diff-so-fancy --patch
+    diffFilter = diff-so-fancy --patch
     singlekey = true
+
+[log]
+    abbrevCommit = true
+    graphsColors = blue,yellow,cyan,magenta,green,red
+
+[mergetool]
+    keepBackup = false
+
+[pager]
+    branch = false
+    diff = diff-so-fancy | less --tabs=4 -RFX
+    tag = false
+
+[pull]
+    default = current
+    rebase = true
+
+[push]
+    autoSetupRemote = true
+    default = current
+    followTags = true
+
+[rebase]
+    autoStash = true
+    missingCommitsCheck = warn
 
 [status]
     branch = true
     showStash = true
     showUntrackedFiles = all
-[push]
-    # See `git help config` (search for push.default)
-    # for more information on different options of the below setting.
-    #
-    # Setting to git 2.0 default to suppress warning message
-    default = current
-    autoSetupRemote = true
-    followTags = true
-[pull]
-    default = current
-    rebase = true
-[rebase]
-    autoStash = true
-    missingCommitsCheck = warn
-[log]
-    abbrevCommit = true
-    graphsColors = blue,yellow,cyan,magenta,green,red
-[color "decorate"]
-    HEAD = red
-    branch = blue
-    tag = yellow
-    remoteBranch = magent
 
-[init]
-	defaultBranch = main
+[tag]
+    sort = -taggerdate
+
 [url "https://github.com/"]
-	insteadof = git://github.com/
-[credential]
-	helper = /usr/local/bin/git-credential-manager
-    credentialStore = gpg
-[credential "https://dev.azure.com"]
-	useHttpPath = true
-[http]
-	emptyauth = true
+    insteadof = git://github.com/
