@@ -41,7 +41,7 @@ alias gdel='git branch -D'
 alias gbc='git for-each-ref --format="%(authorname) %09 %(if)%(HEAD)%(then)*%(else)%(refname:short)%(end) %09 %(creatordate)" refs/remotes/ --sort=authorname DESC' # FROM https://stackoverflow.com/a/58623139/10362396
 
 # commit
-alias gc='git commit -v'
+alias gc='git commit -v -t'
 alias gca='git commit -v -a'
 alias gcaa='git commit -a --amend -C HEAD' # Add uncommitted and unstaged changes to the last commit
 alias gcam='git commit -v -am'

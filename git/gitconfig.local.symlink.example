@@ -1,5 +1,7 @@
 [user]
         name = AUTHORNAME
         email = AUTHOREMAIL
+        siginingkey = AUTHORKEY
 [credential]
         helper = GIT_CREDENTIAL_HELPER
+
