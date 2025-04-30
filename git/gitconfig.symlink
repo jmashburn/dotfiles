@@ -9,10 +9,16 @@
     statusHints = false
 
 [alias]
+    amend = commit --amend --no-edit
     co = checkout
     count = !git shortlog -sn
+    last = log -1 HEAD
+    lg = log --graph --oneline --decorate --all
+    lol = log --graph --decorate --oneline --all
     promote = !$BASH/bin/git-promote
     rank-contributors = !$BASH/bin/git-rank-contributors
+    st = status -sb
+    unstage = reset HEAD --
     wtf = !$BASH/bin/git-wtf
 
 [apply]
@@ -51,6 +57,7 @@
     template = ~/.gitmessage
 
 [core]
+    autocrlf = input
     compression = 9
     editor = vim
     excludesfile = ~/.gitignore
@@ -74,6 +81,9 @@
 
 [difftool]
     prompt = false
+
+[fetch]
+    prune = true
 
 [help]
     autocorrect = 1
@@ -111,9 +121,11 @@
     autoSetupRemote = true
     default = current
     followTags = true
+    useForceIfIncludes = true
 
 [rebase]
     autoStash = true
+    autosquash = true
     missingCommitsCheck = warn
 
 [status]
