@@ -35,7 +35,7 @@
 
 [color "branch"]
     current = magenta
-    local = default
+    local = red
     plain = blue
     remote = yellow
     upstream = green

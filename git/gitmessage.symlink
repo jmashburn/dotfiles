@@ -1,40 +1,34 @@
-# ✨ feat:   
-# 🐛 fix:       
-# 📝 docs: 
-# 💄 style:       
-# ♻️ refactor:   
-# ⚡ perf: 
-# ✅ test:
-# 🔧 chore:
-# 👷 ci:
-# ⏪ revert:
-
 # <type>: <summary>
 # Example: ✨ feat(login): add OAuth2 support
-#
+# -----------------------------------------------------------------------
 # ✅ Use one of the following types (with emojis):
 # ✨ feat        – new feature
 # 🐛 fix         – bug fix
 # 📝 docs        – documentation
 # 💄 style       – code style (formatting, etc.)
-# ♻️ refactor    – code refactor without behavior change
+# 📚 refactor    – code refactor without behavior change
 # ⚡ perf        – performance improvement
 # ✅ test        – adding tests
 # 🔧 chore       – build or maintenance task
 # 👷 ci          – CI/CD configuration
 # ⏪ revert      – reverting commits
-#
+
 # 📣 Title: Start with uppercase, no period. Imperative mood (e.g., "Fix", not "Fixed" or "Fixes")
-# Max 50 characters — limit is right here:                              #
-#
+# Max 50 characters — limit is right here:       
+# ------------------------------------------------
+# 📣
+# ------------------------------------------------
+
 # 💡 Leave a blank line between title and body
-#
 # 🧾 Body: Explain *what* and *why*, not *how*. Include Jira ID or ticket number if applicable.
-# Wrap lines at 72 characters — here's your guide:                      #
-#
+# Wrap lines at 72 characters — here's your guide:                      
+# -----------------------------------------------------------------------
+# 🧾 
+# -----------------------------------------------------------------------
+
 # 🙌 Contributors (leave at least one blank line above):
 # Co-authored-by: Name <user@users.noreply.github.com>
-#
+# 🙌 Co-authored-by: 
 # 📚 Reference:
 # https://chris.beams.io/posts/git-commit/
 #
