@@ -1,14 +1,20 @@
 # Local/private config goes in the include
-[include]
-    path = ~/.gitconfig.local
-    path = ~/.gitconfig.custom
+[user]
+	# Instruct Git to avoid trying to guess defaults for user.email and user.name, and instead retrieve the values only from the configuration.
+	# For example, if you have multiple email addresses and would like to use a different one for each repository, then with this configuration option set to true in the global config along with a name, Git will prompt you to set up an email before making new commits in a newly cloned repository.
+	# Defaults to false.
+	# https://blog.github.com/2016-03-28-git-2-8-has-been-released/#dont-guess-my-identity
+	# https://git-scm.com/docs/git-config#Documentation/git-config.txt-useruseConfigOnly
+    useConfigOnly = true
 
 [advice]
     addEmptyPathspec = false
     pushNonFastForward = false
     statusHints = false
+    skippedCherryPicks = false
 
 [alias]
+
     amend = commit --amend --no-edit
     co = checkout
     count = !git shortlog -sn
@@ -21,11 +27,114 @@
     unstage = reset HEAD --
     wtf = !$BASH/bin/git-wtf
 
+    branches = branch --all
+    tags = tag --list
+    stashes = stash list
+
+    aliases = config --get-regexp ^alias\\.
+
+    worktrees = worktree list
+    remotes = remote --verbose
+    configs = config --list --show-origin
+
+    pushf = push --force-with-lease
+
+    f = fetch --all --prune --jobs=16
+    detach = checkout --detatch
+    m = mergetool --no-prompt --tool=vimdiff
+
+    branches-with = for-each-ref --format='%(refname)' refs/heads/ --sort -committerdate --contains
+
+    # Git log --graph aliases
+	# Several aliases for git log --decorate --graph --oneline, with nicer formatting
+		# `l` for specified branches or HEAD, as in `git l main`
+		# `la` for almost all branches and refs
+		# `laa` for all refs. The difference is `la` filters refs/notes, refs/stash, dependabot stuff, and pull requests
+		# decorate is like `la`, but with `--simplify-by-decoration`
+	# Common formatting
+		# %C(auto)%(decorate:prefix=👇 ,suffix=%n,tag=,separator= )%C(reset) ref names, like the --decorate option on its own line, like `* upstream/pr/123`
+		#--format=format:'%C(auto)%(decorate:prefix=👇 ,suffix=%n,tag=,separator= )%C(reset)%C(dim)%h%C(reset) %N%-C()%C(normal)%<|(-50,trunc)%s%C(reset) %C(brightmagenta)%<(15,trunc)%an%C(reset) %C(brightblue)%ad%C(reset) %C(brightcyan)%ar%C(reset)'
+		# %C(dim)%h%C(reset)                                                 abbreviated commit hash, like `63978b049`
+		# %N%-C()                                                            git notes with trailing newline stripped https://stackoverflow.com/a/76133983/
+		# %C(normal)%<|(-50,trunc)%s%C(reset)                                subject (commit message) truncated 50 characters away from the right edge of the screen
+		# %C(brightmagenta)%<(15,trunc)%an%C(reset)                          author name truncated to 15
+		# %C(brightblue)%ad%C(reset)                                         author date, like `2000-12-31`
+		# %C(brightcyan)%ar%C(reset)                                         author date, relative, like `10 days ago`
+	l = log \
+		--graph \
+		--decorate \
+		--date=short \
+		--format=format:'%C(auto)%(decorate:prefix=👇 ,suffix=%n,tag=,separator= )%C(reset)%C(dim)%h%C(reset) %N%-C()%C(normal)%<|(-50,trunc)%s%C(reset) %C(brightmagenta)%<(15,trunc)%an%C(reset) %C(brightblue)%ad%C(reset) %C(brightcyan)%ar%C(reset)'
+	laa = l --all
+	la  = l \
+		--exclude=refs/prefetch/* \
+		--exclude=refs/remotes/origin/pr/* \
+		--exclude=refs/remotes/upstream/pr/* \
+		--exclude=refs/remotes/origin/dependabot/* \
+		--exclude=refs/notes/tests/* \
+		--exclude=refs/notes/commits \
+		--exclude=refs/stash \
+		--exclude=refs/remotes/origin/retype \
+		--all
+    
+    decorate = la --simplify-by-decoration
+
+    # reflog
+	# Some people alias 'rl' to just 'reflog' without all these options
+	# https://stackoverflow.com/a/17369548/
+	rl = reflog @{now} --date=relative --format=format:'%C(brightyellow)%h%C(reset) %C(brightblue)%gd%C(reset) %C(brightcyan)%ar%C(reset)%C(auto)%d%C(reset) %C(brightmagenta)%gs%C(reset) %C(normal)%s%C(reset)'
+
+	# https://gist.github.com/DuaelFr/5663854
+	who = shortlog --summary --numbered --email --no-merges
+	ignore = update-index --assume-unchanged
+	unignore = update-index --no-assume-unchanged
+	ignored = !git ls-files -v | grep '^h'
+
+	# repository root directory
+	# https://stackoverflow.com/a/957978/
+	root = rev-parse --show-toplevel
+
+	# initial commit(s) that are ancestors of HEAD
+	# https://stackoverflow.com/a/1007545/
+	first = rev-list --max-parents=0 HEAD
+
+	# Aggressive optimizations to save disk and time
+	# https://github.com/GitAlias/gitalias/blob/master/gitalias.txt
+	pruner = !git prune --expire=now && git reflog expire --expire-unreachable=now --rewrite --all
+	repacker = repack -a -d -f --depth=300 --window=300 --window-memory=1g
+	optimize = !git gc --aggressive && git pruner && git repacker && git prune-packed
+
+	# Show most recent commit on each branch that isn't pushed
+	# https://stackoverflow.com/a/3338774/
+	unpushed = log --branches --not --remotes --simplify-by-decoration --decorate --oneline
+
+	# Find when commit has been merged into branch
+	# git find-merge <sha> <branch:-HEAD>
+	# https://stackoverflow.com/a/30998048
+	find-merge = "!sh -c 'commit=$0 && branch=${1:-HEAD} && (git rev-list $commit..$branch --ancestry-path | cat -n; git rev-list $commit..$branch --first-parent | cat -n) | sort -k2 -s | uniq -f1 -d | sort -n | tail -1 | cut -f2'"
+	show-merge = "!sh -c 'merge=$(git find-merge $0 $1) && [ -n \"$merge\" ] && git show $merge'"
+
+	find-merged = "!git branch --merge upstream/main --remote --list 'origin/*' | sed 's#origin/##'"
+	delete-merged = "!git branch --merge upstream/main --remote --list 'origin/*' | sed 's#origin/##' | xargs git push --delete origin"
+
+	# https://www.colinodell.com/blog/201803/four-useful-git-aliases
+	children = "!bash -c 'c=${1:-HEAD}; set -- $(git rev-list --all --not \"$c\"^@ --children | grep $(git rev-parse \"$c\") ); shift; echo $1' -"
+	today = !git commit --message \"Update $(date +%Y-%m-%d).\"
+
 [apply]
     whitespace = nowarn
 
 [branch]
-    sort = -committerdate
+	# When a new branch is created with git branch or git checkout that tracks another branch, git should set up pull to rebase instead of merge.
+	# Change from 'never' to 'always'
+	# https://git-scm.com/docs/git-config#Documentation/git-config.txt-branchautoSetupRebase
+	autoSetupRebase = always
+	# git should always set up tracking for new branches, not just for remote branches.
+	# Change from 'true' to 'always'
+	# https://git-scm.com/docs/git-config#Documentation/git-config.txt-branchautoSetupMerge
+	# autoSetupMerge = always
+	# https://blog.gitbutler.com/git-tips-2-new-stuff-in-git/
+	sort = -committerdate
 
 [color]
     branch = auto
@@ -66,7 +175,8 @@
 
 [credential]
     credentialStore = gpg
-    helper = /usr/local/bin/git-credential-manager
+	helper = 
+	helper = /usr/local/bin/git-credential-manager
 
 [credential "https://dev.azure.com"]
     useHttpPath = true
@@ -128,6 +238,12 @@
     autosquash = true
     missingCommitsCheck = warn
 
+[rerere]
+	# The git rerere functionality is a bit of a hidden feature. The name stands for "reuse recorded resolution" and, as the name implies, it allows you to ask Git to remember how you’ve resolved a hunk conflict so that the next time it sees the same conflict, Git can resolve it for you automatically.
+	# https://git-scm.com/book/en/v2/Git-Tools-Rerere
+	# https://stackoverflow.com/questions/5519244/are-there-any-downsides-to-enabling-git-rere
+    enabled = true
+    autoUpdate = true
 [status]
     branch = true
     showStash = true
@@ -138,3 +254,10 @@
 
 [url "https://github.com/"]
     insteadof = git://github.com/
+
+[include]
+    path = ~/.gitconfig.local
+    path = ~/.gitconfig.custom
+
+[feature]
+    git3 = true
