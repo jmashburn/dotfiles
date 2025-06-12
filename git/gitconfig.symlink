@@ -121,7 +121,7 @@
 	children = "!bash -c 'c=${1:-HEAD}; set -- $(git rev-list --all --not \"$c\"^@ --children | grep $(git rev-parse \"$c\") ); shift; echo $1' -"
     fixup = "!bash -c 'REV=$(git rev-parse $1) && git commit --fixup $@ && git rebase -i --autostash --autosquash $REV^' -"
     cleanup = "!git branch --merged | grep -v -P '^\\*|master|main|develop' | xargs -n1 -r git branch -d"
-	today = !git commit --message \"Update $(date +%Y-%m-%d).\"
+	today = !git commit --message \"Update $(date +%Y-%m-%d)\"
 
 [apply]
     whitespace = nowarn
