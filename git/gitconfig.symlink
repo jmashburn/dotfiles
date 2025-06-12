@@ -51,9 +51,8 @@
 		# `la` for almost all branches and refs
 		# `laa` for all refs. The difference is `la` filters refs/notes, refs/stash, dependabot stuff, and pull requests
 		# decorate is like `la`, but with `--simplify-by-decoration`
-	# Common formatting
+	# Common formatting *decorate:prefix... not working.?
 		# %C(auto)%(decorate:prefix=👇 ,suffix=%n,tag=,separator= )%C(reset) ref names, like the --decorate option on its own line, like `* upstream/pr/123`
-		#--format=format:'%C(auto)%(decorate:prefix=👇 ,suffix=%n,tag=,separator= )%C(reset)%C(dim)%h%C(reset) %N%-C()%C(normal)%<|(-50,trunc)%s%C(reset) %C(brightmagenta)%<(15,trunc)%an%C(reset) %C(brightblue)%ad%C(reset) %C(brightcyan)%ar%C(reset)'
 		# %C(dim)%h%C(reset)                                                 abbreviated commit hash, like `63978b049`
 		# %N%-C()                                                            git notes with trailing newline stripped https://stackoverflow.com/a/76133983/
 		# %C(normal)%<|(-50,trunc)%s%C(reset)                                subject (commit message) truncated 50 characters away from the right edge of the screen
@@ -64,7 +63,7 @@
 		--graph \
 		--decorate \
 		--date=short \
-		--format=format:'%C(auto)%(decorate:prefix=👇 ,suffix=%n,tag=,separator= )%C(reset)%C(dim)%h%C(reset) %N%-C()%C(normal)%<|(-50,trunc)%s%C(reset) %C(brightmagenta)%<(15,trunc)%an%C(reset) %C(brightblue)%ad%C(reset) %C(brightcyan)%ar%C(reset)'
+		--format=format:'%C(dim)%h%C(reset) %N%-C()%C(normal)%<|(-50,trunc)%s%C(reset) %C(brightmagenta)%<(15,trunc)%an%C(reset) %C(brightblue)%ad%C(reset) %C(brightcyan)%ar%C(reset)'
 	laa = l --all
 	la  = l \
 		--exclude=refs/prefetch/* \
@@ -118,7 +117,10 @@
 	delete-merged = "!git branch --merge upstream/main --remote --list 'origin/*' | sed 's#origin/##' | xargs git push --delete origin"
 
 	# https://www.colinodell.com/blog/201803/four-useful-git-aliases
+    p = "!git pull --ff-only"
 	children = "!bash -c 'c=${1:-HEAD}; set -- $(git rev-list --all --not \"$c\"^@ --children | grep $(git rev-parse \"$c\") ); shift; echo $1' -"
+    fixup = "!bash -c 'REV=$(git rev-parse $1) && git commit --fixup $@ && git rebase -i --autostash --autosquash $REV^' -"
+    cleanup = "!git branch --merged | grep -v -P '^\\*|master|main|develop' | xargs -n1 -r git branch -d"
 	today = !git commit --message \"Update $(date +%Y-%m-%d).\"
 
 [apply]
@@ -140,7 +142,7 @@
     branch = auto
     diff = auto
     status = auto
-    ui = true
+    #ui = true
 
 [color "branch"]
     current = magenta
@@ -151,6 +153,7 @@
 
 [color "decorate"]
     HEAD = red
+    prefix= )
     branch = blue
     remoteBranch = magenta
     tag = yellow
