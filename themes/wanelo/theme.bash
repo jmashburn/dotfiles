@@ -12,7 +12,7 @@ GIT_THEME_PROMPT_SUFFIX="${green}|"
 RVM_THEME_PROMPT_PREFIX="|"
 RVM_THEME_PROMPT_SUFFIX="|"
 
-function prompt_command() {
+function prompt_commands() {
     if [ $? -eq 0 ]; then
       status=❤️
     else
@@ -23,4 +23,4 @@ function prompt_command() {
 
 THEME_CLOCK_COLOR=${THEME_CLOCK_COLOR:-"$blue"}
 
-PROMPT_COMMAND=prompt_command;
+safe_append_prompt_command prompt_commands

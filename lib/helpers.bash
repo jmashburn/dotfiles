@@ -237,16 +237,113 @@ function _egrep() {
 }
 
 function _pathmunge() {
-    if [ -e $1 ]; then
-    if ! echo $PATH | egrep -q "(^|:)$1($|:)" ; then
-        if [ "$2" = "after" ] ; then
-            PATH=$PATH:$1
-        else
-            PATH=$1:$PATH
+    case " $@ " in
+        " -h ")
+            cat << EOF
+    usage: pathmunge [OPTIONS]...[VARIABLE] [<VALUE>]
+        or: pathmunge [<VALUE>] before
+        or: pathmunge [<VALUE>] after
+
+
+    options:
+        -p prepend to variable (default action)
+        -a append instead of prepend
+        -s use different separator than the default ":"
+        -h display this help and exit
+    
+    examples:
+        $ pathmunge ./bin                   # prepends PATH with './bin'
+        $ pathmunge ./.local/bin after      # appends PATH with './.local/bin'
+        $ pathmunge -a foo                  # appends 'foo' to PATH
+        $ pathmunge CPATH ~/.local/lib      # prepends CPATH with '~/.local/lib'
+        $ pathmunge -s '|' FOO aa           # turns FOO='bb|cc into FOO='aa|bb|CC'
+        $ pathmunge -p BAR after            # prepends 'after' to BAR
+EOF
+        return 0
+        ;;
+    esac
+
+    if [ $# = 2 ]; then
+        if [ -z "$1" ] || [ -z "$2" ]; then
+            return 0
+        fi
+
+        if [ "$2" = "before" ] || [ "$2" = "after" ]; then
+            case ":${PATH}:" in 
+                *:"$1":*) ;;
+                *) [ "$2" = "before" ] && PATH="$1:$PATH" || PATH="$PATH:$1" ;;
+            esac
+            return 0
         fi
     fi
-    fi
+
+    # shellcheck disable=SC2046
+    eval "$(
+        while getopts "pas:" o; do :; done
+        shift $((OPTIND - 1))
+        test -z "$2" && echo 'PATH' || echo "$1"
+    )"=\"$(
+        A=0     # append flag
+        S=":"   # separator
+
+        while getopts "pas:" o; do
+            case "$o" in 
+                p) A=0 ;;
+                a) A=1 ;;
+                s) S="$OPTARG" ;;
+                ?)
+                    >&2 echo "pathmunge: error: unknown options '$o'"
+                    return
+                    ;;
+            esac
+        done
+        shift $((OPTIND - 1))
+
+        if [ -z "$2" ]; then
+            var='PATH'
+            new="$1"
+        else
+            var="$1"
+            new="$2"
+        fi
+
+        old=
+        eval old="\$$var"
+
+        case "${S}${old}${S}" in
+            *"${S}${new}${S}"*)
+                updated="$old"
+                ;;
+            "${S}${S}")
+                updated="$new"
+                ;;
+            *)
+                if [ "$A" -eq 0 ]; then
+                    updated="${new}${S}${old}"
+                else
+                    updated="${old}${S}${new}"
+                fi
+                ;;
+        esac
+
+        echo "$updated" | sed \
+            -e 's+\\+\\\\\\+g' \
+            -e 's/\$/\\$/g' \
+            -e 's/"/\\"/g'
+    )\"
 }
+
+#function _pathmunge() {
+#    if [ -e $1 ]; then
+#    if ! echo $PATH | egrep -q "(^|:)$1($|:)" ; then
+#        if [ "$2" = "after" ] ; then
+#            PATH=$PATH:$1
+#        else
+#            PATH=$1:$PATH
+#        fi
+#    fi
+#    fi
+#}
 
 # autoload bash scripts. Much faster than `source script.sh`
 # usage: autoload script.sh        

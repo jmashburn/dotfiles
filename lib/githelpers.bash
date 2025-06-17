@@ -1,4 +1,5 @@
 function _git-symbolic-ref() {
+	echo "asdfas"
 	git symbolic-ref -q HEAD 2> /dev/null
 }
 
@@ -86,7 +87,7 @@ function _git-upstream-branch-gone() {
 }
 
 function _git-hide-status() {
-	[[ "$(git config --get bash-it.hide-status)" == "1" ]]
+	[[ "$(git config --get dotfiles.hide-status)" == "1"  ]] || [[ "$(git config --get dotfiles.hide-status)" == "true" ]]
 }
 
 function _git-status() {

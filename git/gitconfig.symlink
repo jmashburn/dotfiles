@@ -264,3 +264,6 @@
 
 [feature]
     git3 = true
+
+[dotfiles]
+    hide-status = 0

@@ -1,5 +1,8 @@
-## The Base Theme - Just setting up the basics
+# shellcheck shell=bash
+# shellcheck disable=SC2034 # Expected behavior for themes.
 
+# Colors for listing files, using default color scheme.
+# To customize color scheme by theme, check out https://geoff.greer.fm/lscolors/
 export CLICOLOR LSCOLORS LS_COLORS
 
 CLOCK_CHAR_THEME_PROMPT_PREFIX=''
@@ -53,6 +56,18 @@ SCM_GIT_STAGED_CHAR="S:"
 SCM_GIT_STASH_CHAR_PREFIX="{"
 SCM_GIT_STASH_CHAR_SUFFIX="}"
 
+SCM_JJ="jj"
+SCM_JJ_CHAR='±'
+SCM_JJ_DETACHED_CHAR='⌿'
+SCM_JJ_AHEAD_CHAR="↑"
+SCM_JJ_BEHIND_CHAR="↓"
+SCM_JJ_AHEAD_BEHIND_PREFIX_CHAR=" "
+SCM_JJ_UNTRACKED_CHAR="?:"
+SCM_JJ_UNSTAGED_CHAR="U:"
+SCM_JJ_STAGED_CHAR="S:"
+SCM_JJ_STASH_CHAR_PREFIX="{"
+SCM_JJ_STASH_CHAR_SUFFIX="}"
+
 SCM_NONE='NONE'
 SCM_NONE_CHAR='○'
 
@@ -81,6 +96,8 @@ RBFU_THEME_PROMPT_SUFFIX='|'
 
 function _appearance_scm_init() {
 	GIT_EXE="$(type -P "${SCM_GIT:-git}" || true)"
+	JJ_EXE="$(type -P "${SCM_JJ:-jj}" || true)"
+
 	return 0
 }
 _library_finalize_hook+=('_appearance_scm_init')
@@ -88,9 +105,11 @@ _library_finalize_hook+=('_appearance_scm_init')
 function scm() {
 	if [[ "${SCM_CHECK:-true}" == "false" ]]; then
 		SCM="${SCM_NONE-NONE}"
+	elif [[ -x "${JJ_EXE-}" ]] && _find-in-ancestor '.jj' > /dev/null; then
+		SCM="${SCM_JJ?}"
 	elif [[ -x "${GIT_EXE-}" ]] && _find-in-ancestor '.git' > /dev/null; then
 		SCM="${SCM_GIT?}"
-	else
+    else
 		SCM="${SCM_NONE-NONE}"
 	fi
 }
@@ -115,6 +134,9 @@ function scm_prompt_char() {
 	case ${SCM?} in
 		"${SCM_GIT?}")
 			SCM_CHAR="${SCM_GIT_CHAR?}"
+			;;
+		"${SCM_JJ?}")
+			SCM_CHAR="${SCM_JJ_CHAR?}"
 			;;
 		*)
 			SCM_CHAR="${SCM_NONE_CHAR:-}"
@@ -159,67 +181,36 @@ function scm_prompt_info_common() {
 				prompt_info="${SCM}_prompt_info"
 			fi
 			;;
-		*)
+		"${SCM_JJ?}")
+			if [[ ${SCM_JJ_SHOW_MINIMAL_INFO:-false} == "true" ]]; then
+				# user requests minimal jj status information
+				prompt_info="${SCM}_prompt_minimal_info"
+			else
+				# more detailed git status
+				prompt_info="${SCM}_prompt_info"
+			fi
+			;;
+
+        *)
 			# TODO: consider adding minimal status information for hg and svn
 			prompt_info="${SCM}_prompt_info"
 			;;
 	esac
-	#FORCING INTO GIT - REMOVE ONCE YOU"VE FIGURED IT OUT
-	#prompt_info="${SCM_GIT}_prompt_info"
 	_is_function "${prompt_info}" && "${prompt_info}"
 }
 
-function battery_char() {
-	# The battery_char function depends on the presence of the battery_percentage function.
-	if [[ "${THEME_BATTERY_PERCENTAGE_CHECK}" == true ]] && _command_exists battery_percentage; then
-		echo -ne "${bold_red?}$(battery_percentage)%"
-	else
-		false
+function terraform_workspace_prompt() {
+	if _command_exists terraform; then
+		if [[ -d .terraform ]]; then
+			terraform workspace show 2> /dev/null
+		fi
 	fi
 }
 
-function clock_char() {
-	local clock_char clock_char_color show_clock_char
-	clock_char="${THEME_CLOCK_CHAR:-⌚}"
-	clock_char_color="${THEME_CLOCK_CHAR_COLOR:-${normal:-}}"
-	show_clock_char="${THEME_SHOW_CLOCK_CHAR:-"true"}"
-
-	if [[ "${show_clock_char}" == "true" ]]; then
-		echo -ne "${clock_char_color}${CLOCK_CHAR_THEME_PROMPT_PREFIX-}${clock_char}${CLOCK_CHAR_THEME_PROMPT_SUFFIX-}"
+function active_gcloud_account_prompt() {
+	if _command_exists gcloud; then
+		gcloud config list account --format "value(core.account)" 2> /dev/null
 	fi
-}
-
-function clock_prompt() {
-	local clock_color="${THEME_CLOCK_COLOR:-${normal?}}"
-	local clock_format="${THEME_CLOCK_FORMAT:-"%H:%M:%S"}"
-	local show_clock="${THEME_SHOW_CLOCK:-${THEME_CLOCK_CHECK:-true}}"
-	local clock_string="\D{${clock_format}}"
-
-	if [[ "${show_clock}" == "true" ]]; then
-		echo -ne "${clock_color}${CLOCK_THEME_PROMPT_PREFIX-}${clock_string}${CLOCK_THEME_PROMPT_SUFFIX-}"
-	fi
-}
-
-function user_host_prompt() {
-	if [[ "${THEME_SHOW_USER_HOST:-false}" == "true" ]]; then
-		echo -ne "${USER_HOST_THEME_PROMPT_PREFIX-}\u@${THEME_PROMPT_HOST:-\h}${USER_HOST_THEME_PROMPT_SUFFIX-}"
-	fi
-}
-
-# backwards-compatibility
-function git_prompt_info() {
-	_git-hide-status && return
-	git_prompt_vars
-	echo -ne "${SCM_PREFIX?}${SCM_BRANCH?}${SCM_STATE?}${SCM_SUFFIX?}"
-}
-
-function scm_char() {
-	scm_prompt_char
-	echo -ne "${SCM_THEME_CHAR_PREFIX?}${SCM_CHAR?}${SCM_THEME_CHAR_SUFFIX?}"
-}
-
-function prompt_char() {
-	scm_char
 }
 
 function git_prompt_minimal_info() {
@@ -241,7 +232,7 @@ function git_prompt_minimal_info() {
 }
 
 function git_prompt_vars() {
-	if [[ "${Thank:-false}" != "false" ]] && _command_exists gitstatus_query && gitstatus_query && [[ "${VCS_STATUS_RESULT:-}" == "ok-sync" ]]; then
+	if [[ "${SCM_GIT_USE_GITSTATUS:-false}" != "false" ]] && _command_exists gitstatus_query && gitstatus_query && [[ "${VCS_STATUS_RESULT:-}" == "ok-sync" ]]; then
 		# we can use faster gitstatus
 		# use this variable in githelpers and below to choose gitstatus output
 		SCM_GIT_GITSTATUS_RAN=true
@@ -318,6 +309,65 @@ function git_prompt_vars() {
 	SCM_CHANGE=$(_git-short-sha 2> /dev/null || true)
 }
 
+function jj_prompt_vars() {
+	local jj_root bookmark
+	if [[ -n $(jj status 2> /dev/null) ]]; then
+		SCM_DIRTY=1
+		SCM_STATE="${JJ_THEME_PROMPT_DIRTY:-${SCM_THEME_PROMPT_DIRTY?}}"
+	else
+		SCM_DIRTY=0
+		SCM_STATE="${JJ_THEME_PROMPT_CLEAN:-${SCM_THEME_PROMPT_CLEAN?}}"
+	fi
+	SCM_PREFIX="${JJ_THEME_PROMPT_PREFIX:-${SCM_THEME_PROMPT_PREFIX-}}"
+	SCM_SUFFIX="${JJ_THEME_PROMPT_SUFFIX:-${SCM_THEME_PROMPT_SUFFIX-}}"
+
+	jj_root="$(_find-in-ancestor ".jj")/.jj"
+
+	if [[ -f "$jj_root/branch" ]]; then
+		# Mercurial holds it's current branch in .hg/branch file
+		SCM_BRANCH=$(< "${jj_root}/branch")
+		bookmark="${jj_root}/bookmarks.current"
+		[[ -f "${bookmark}" ]] && SCM_BRANCH+=:$(< "${bookmark}")
+	else
+		SCM_BRANCH=$(jj summary 2> /dev/null | grep branch: | awk '{print $2}')
+	fi
+
+	if [[ -f "$jj_root/dirstate" ]]; then
+		# Mercurial holds various information about the working directory in .jj/dirstate file. More on http://mercurial.selenic.com/wiki/DirState
+		SCM_CHANGE=$(hexdump -vn 10 -e '1/1 "%02x"' "$hg_root/dirstate" | cut -c-12)
+	else
+		SCM_CHANGE=$(jj summary 2> /dev/null | grep parent: | awk '{print $2}')
+	fi
+}
+
+function k8s_context_prompt() {
+	kubectl config current-context 2> /dev/null
+}
+
+function k8s_namespace_prompt() {
+	kubectl config view --minify --output 'jsonpath={..namespace}' 2> /dev/null
+}
+
+function virtualenv_prompt() {
+	local virtualenv
+	if [[ -n "${VIRTUAL_ENV:-}" ]]; then
+		virtualenv="${VIRTUAL_ENV##*/}"
+		echo -ne "${VIRTUALENV_THEME_PROMPT_PREFIX-}${virtualenv}${VIRTUALENV_THEME_PROMPT_SUFFIX-}"
+	fi
+}
+
+function py_interp_prompt() {
+	local py_version
+	py_version="$(python --version 2>&1 | awk 'NR==1{print "py-"$2;}')" || return
+	echo -ne "${PYTHON_THEME_PROMPT_PREFIX-}${py_version}${PYTHON_THEME_PROMPT_SUFFIX-}"
+}
+
+function python_version_prompt() {
+	virtualenv_prompt
+	condaenv_prompt
+	py_interp_prompt
+}
+
 function git_user_info() {
 	local current_user
 	# support two or more initials, set by 'git pair' plugin
@@ -325,4 +375,86 @@ function git_user_info() {
 	# if `user.initials` weren't set, attempt to extract initials from `user.name`
 	[[ -z "${current_user}" ]] && current_user=$(printf "%s" "$(for word in $(git config user.name | PERLIO=:utf8 perl -pe '$_=lc'); do printf "%s" "${word:0:1}"; done)")
 	[[ -n "${current_user}" ]] && printf "%s" "${SCM_THEME_CURRENT_USER_PREFFIX-}${current_user}${SCM_THEME_CURRENT_USER_SUFFIX-}"
+}
+
+function clock_char() {
+	local clock_char clock_char_color show_clock_char
+	clock_char="${THEME_CLOCK_CHAR:-⌚}"
+	clock_char_color="${THEME_CLOCK_CHAR_COLOR:-${normal:-}}"
+	show_clock_char="${THEME_SHOW_CLOCK_CHAR:-"true"}"
+
+	if [[ "${show_clock_char}" == "true" ]]; then
+		echo -ne "${clock_char_color}${CLOCK_CHAR_THEME_PROMPT_PREFIX-}${clock_char}${CLOCK_CHAR_THEME_PROMPT_SUFFIX-}"
+	fi
+}
+
+function clock_prompt() {
+	local clock_color="${THEME_CLOCK_COLOR:-${normal?}}"
+	local clock_format="${THEME_CLOCK_FORMAT:-"%H:%M:%S"}"
+	local show_clock="${THEME_SHOW_CLOCK:-${THEME_CLOCK_CHECK:-true}}"
+	local clock_string="\D{${clock_format}}"
+
+	if [[ "${show_clock}" == "true" ]]; then
+		echo -ne "${clock_color}${CLOCK_THEME_PROMPT_PREFIX-}${clock_string}${CLOCK_THEME_PROMPT_SUFFIX-}"
+	fi
+}
+
+function user_host_prompt() {
+	if [[ "${THEME_SHOW_USER_HOST:-false}" == "true" ]]; then
+		echo -ne "${USER_HOST_THEME_PROMPT_PREFIX-}\u@${THEME_PROMPT_HOST:-\h}${USER_HOST_THEME_PROMPT_SUFFIX-}"
+	fi
+}
+
+# backwards-compatibility
+function git_prompt_info() {
+	_git-hide-status && return
+	git_prompt_vars
+	echo -ne "${SCM_PREFIX?}${SCM_BRANCH?}${SCM_STATE?}${SCM_SUFFIX?}"
+}
+
+function jj_prompt_info() {
+	jj_prompt_vars
+	echo -ne "${SCM_PREFIX?}${SCM_BRANCH?}:${SCM_CHANGE#*:}${SCM_STATE?}${SCM_SUFFIX?}"
+}
+
+function prompt_char() {
+	scm_char
+}
+
+function battery_char() {
+	# The battery_char function depends on the presence of the battery_percentage function.
+	if [[ "${THEME_BATTERY_PERCENTAGE_CHECK}" == true ]] && _command_exists battery_percentage; then
+		echo -ne "${bold_red?}$(battery_percentage)%"
+	else
+		false
+	fi
+}
+
+if ! _command_exists battery_charge; then
+	# if user has installed battery plugin, skip this...
+	function battery_charge() {
+		: # no op
+	}
+fi
+
+function aws_profile() {
+	if [[ -n "${AWS_PROFILE:-}" ]]; then
+		echo -ne "${AWS_PROFILE}"
+	elif [[ -n "${AWS_DEFAULT_PROFILE:-}" ]]; then
+		echo -ne "${AWS_DEFAULT_PROFILE}"
+	else
+		echo -ne "default"
+	fi
+}
+
+function _save-and-reload-history() {
+	local autosave="${1:-${HISTORY_AUTOSAVE:-0}}"
+	[[ ${autosave} -eq 1 ]] && local HISTCONTROL="${HISTCONTROL:-}${HISTCONTROL:+:}autoshare"
+	_history-auto-save && _history-auto-load
+}
+
+function venv_prompt() {
+	if [[ -n "${VIRTUAL_ENV:-}" ]]; then
+		virtualenv_prompt
+	fi
 }

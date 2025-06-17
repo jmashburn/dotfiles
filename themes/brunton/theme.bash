@@ -28,4 +28,4 @@ function prompt() {
 : "${THEME_CLOCK_COLOR:=${blue?}${background_white?}}"
 : "${THEME_CLOCK_FORMAT:=" %H:%M:%S"}"
 
- prompt
+ safe_append_prompt_command prompt

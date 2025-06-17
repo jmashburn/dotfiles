@@ -37,5 +37,4 @@ function prompt_command() {
 : "${THEME_CLOCK_COLOR:=${bold_cyan?}}"
 : "${THEME_CLOCK_FORMAT:="%Y-%m-%d %H:%M:%S"}"
 
-#safe_append_prompt_command prompt_command
-prompt_command
+safe_append_prompt_command prompt_command

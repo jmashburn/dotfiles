@@ -34,4 +34,4 @@ function prompt() {
     fi
 }
 
-prompt
+safe_append_prompt_command prompt
