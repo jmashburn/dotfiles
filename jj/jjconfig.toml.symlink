@@ -300,3 +300,6 @@ JJ: 7. Use body to explain what and why, not how
     raw_escape_sequence("\e]8;;\e\\"),
   )
 '''
+
+[dotfiles]
+hide-status = 0

@@ -49,8 +49,8 @@ function _git-friendly-ref() {
 	fi
 }
 
-function _git-num-remotes() {
-	git remote | wc -l
+function _jj-num-remotes() {
+	jj git remote list | wc -l
 }
 
 function _git-upstream() {
@@ -85,8 +85,8 @@ function _git-upstream-branch-gone() {
 	[[ "$(git status -s -b | sed -e 's/.* //')" == "[gone]" ]]
 }
 
-function _git-hide-status() {
-	[[ "$(git config --get dotfiles.hide-status)" == "1"  ]] || [[ "$(git config --get dotfiles.hide-status)" == "true" ]]
+function _jj-hide-status() {
+	[[ "$(jj config get dotfiles.hide-status)" == "1"  ]] || [[ "$(jj config get dotfiles.hide-status)" == "true" ]]
 }
 
 function _git-status() {
