@@ -23,7 +23,7 @@ for i in "${deps[@]}"; do command -v "$i" >/dev/null 2>&1 || { bail="$?"; echo "
 if [ "$bail" ]; then exit "$bail"; fi
 
 version="$(curl -s 'https://go.dev/dl/?mode=json' | jq -r '.[0].version')"
-current="$(${HOME}/.local/go/bin/go version 2>/dev/null | awk '{print $3}')"
+current="$(${BIN_DIR}/go/bin/go version 2>/dev/null | awk '{print $3}')"
 if [[ "$current" == "$version" ]]; then
   echo "Go is already up-to-date at version ${version}"
   exit 0
@@ -36,9 +36,9 @@ update_go() {
   local go_url="https://golang.org/dl/${version}.${os}-${arch}.tar.gz"
 
   curl -so "/tmp/${version}.${os}-${arch}.tar.gz" -L "$go_url" && \
-    rm -rf $HOME/.local/go && tar -C $HOME/.local -xzf /tmp/${version}.${os}-${arch}.tar.gz
+    rm -rf ${BIN_DIR}/go && tar -C $HOME/.local -xzf /tmp/${version}.${os}-${arch}.tar.gz
 
-  tar -C $HOME/.local/ -xzf "/tmp/${version}.${os}-${arch}.tar.gz" && \
+  tar -C ${BIN_DIR}/ -xzf "/tmp/${version}.${os}-${arch}.tar.gz" && \
     echo "Go updated to version ${version}"
 
   rm "/tmp/${version}.${os}-${arch}.tar.gz"
@@ -82,4 +82,4 @@ case "$(uname -s)" in
     ;;
 esac
 
-$HOME/.local/go/bin/go version
+${BIN_DIR}/go/bin/go version
