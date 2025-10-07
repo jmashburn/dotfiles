@@ -8,12 +8,12 @@
 # export PATH=$PATH:/usr/local/go/bin
 
 
-BIN_DIR="$HOME/.bin"
+OPT_DIR="/opt/"
 source $DOTFILES_ROOT/go/path.bash
 
-if [[ ! -d $BIN_DIR ]]
+if [[ ! -d $OPT_DIR ]]
 then
-    mkdir $BIN_DIR
+    mkdir $OPT_DIR
 fi
 
 
@@ -23,7 +23,7 @@ for i in "${deps[@]}"; do command -v "$i" >/dev/null 2>&1 || { bail="$?"; echo "
 if [ "$bail" ]; then exit "$bail"; fi
 
 version="$(curl -s 'https://go.dev/dl/?mode=json' | jq -r '.[0].version')"
-current="$(${BIN_DIR}/go/bin/go version 2>/dev/null | awk '{print $3}')"
+current="$(${OPT_DIR}/go/bin/go version 2>/dev/null | awk '{print $3}')"
 if [[ "$current" == "$version" ]]; then
   echo "Go is already up-to-date at version ${version}"
   exit 0
@@ -36,9 +36,9 @@ update_go() {
   local go_url="https://golang.org/dl/${version}.${os}-${arch}.tar.gz"
 
   curl -so "/tmp/${version}.${os}-${arch}.tar.gz" -L "$go_url" && \
-    rm -rf ${BIN_DIR}/go && tar -C ${BIN_DIR}/ -xzf /tmp/${version}.${os}-${arch}.tar.gz
+    rm -rf ${OPT_DIR}/go && tar -C ${OPT_DIR}/ -xzf /tmp/${version}.${os}-${arch}.tar.gz
 
-  tar -C ${BIN_DIR}/ -xzf "/tmp/${version}.${os}-${arch}.tar.gz" && \
+  tar -C ${OPT_DIR}/ -xzf "/tmp/${version}.${os}-${arch}.tar.gz" && \
     echo "Go updated to version ${version}"
 
   rm "/tmp/${version}.${os}-${arch}.tar.gz"
@@ -82,4 +82,4 @@ case "$(uname -s)" in
     ;;
 esac
 
-${BIN_DIR}/go/bin/go version
+${OPT_DIR}/go/bin/go version
