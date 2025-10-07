@@ -1,1 +1,1 @@
-export PATH="$HOME/.local/bin/kconnect/:$PATH"
+export PATH="$HOME/.bin/kconnect/:$PATH"

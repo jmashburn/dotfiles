@@ -7,7 +7,7 @@
 #
 
 # Check for tofu
-BIN_DIR="$HOME/.bin/"
+BIN_DIR="$HOME/.bin"
 source $DOTFILES_ROOT/tofu/path.bash
 
 

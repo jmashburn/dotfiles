@@ -8,7 +8,7 @@
 # export PATH=$PATH:/usr/local/go/bin
 
 
-BIN_DIR="$HOME/.local/"
+BIN_DIR="$HOME/.bin"
 source $DOTFILES_ROOT/go/path.bash
 
 if [[ ! -d $BIN_DIR ]]

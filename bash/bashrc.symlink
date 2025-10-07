@@ -20,3 +20,4 @@ then
     source ~/.localrc
 fi
 
+. "$HOME/.cargo/env"

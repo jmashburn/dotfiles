@@ -7,7 +7,7 @@
 #
 
 # Check for diff-so-fancy
-BIN_DIR="$HOME/.local/bin"
+BIN_DIR="$HOME/.bin"
 source $DOTFILES_ROOT/git/path.bash
 
 
