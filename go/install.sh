@@ -36,7 +36,7 @@ update_go() {
   local go_url="https://golang.org/dl/${version}.${os}-${arch}.tar.gz"
 
   curl -so "/tmp/${version}.${os}-${arch}.tar.gz" -L "$go_url" && \
-    rm -rf ${BIN_DIR}/go && tar -C $HOME/.local -xzf /tmp/${version}.${os}-${arch}.tar.gz
+    rm -rf ${BIN_DIR}/go && tar -C ${BIN_DIR}/ -xzf /tmp/${version}.${os}-${arch}.tar.gz
 
   tar -C ${BIN_DIR}/ -xzf "/tmp/${version}.${os}-${arch}.tar.gz" && \
     echo "Go updated to version ${version}"
