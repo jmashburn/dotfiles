@@ -1,3 +1,6 @@
+# Library: Theme loading and appearance configuration
+#
+
 : "${CLICOLOR:=$(tput colors)}"
 export CLICOLOR
 

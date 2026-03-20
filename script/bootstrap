@@ -6,31 +6,32 @@ cd "$(dirname "$0")/.."
 DOTFILES_ROOT=$(pwd -P)
 
 export DOTFILES_ROOT=$DOTFILES_ROOT
-set -e
+set -euo pipefail
+trap 'fail "Error on line $LINENO"' ERR
 
 echo ''
 
 info () {
-  printf "\r  [ \033[00;34m..\033[0m ] $1\n"
+  printf "\r  [ \033[00;34m..\033[0m ] %s\n" "$1"
 }
 
 user () {
-  printf "\r  [ \033[0;33m??\033[0m ] $1\n"
+  printf "\r  [ \033[0;33m??\033[0m ] %s\n" "$1"
 }
 
 success () {
-  printf "\r\033[2K  [ \033[00;32mOK\033[0m ] $1\n"
+  printf "\r\033[2K  [ \033[00;32mOK\033[0m ] %s\n" "$1"
 }
 
 fail () {
-  printf "\r\033[2K  [\033[0;31mFAIL\033[0m] $1\n"
+  printf "\r\033[2K  [\033[0;31mFAIL\033[0m] %s\n" "$1"
   echo ''
   exit
 }
 
 setup_gitconfig () {
    
-  if [ "$skip_all" == "false" ]
+  if [ "$skip_all" = "false" ]
   then 
     if [ -n "$1" ]
     then 
@@ -39,26 +40,26 @@ setup_gitconfig () {
         git_profile='local'
     fi 
     
-    if ! [ -f "~/.gitconfig.$git_profile" ]
+    if ! [ -f "$HOME/.gitconfig.$git_profile" ]
         then
         if ! [ -f git/gitconfig."$git_profile".symlink ]
         then
             info 'setup gitconfig'
 
             git_credential='cache'
-            if [ "$(uname -s)" == "Darwin" ]
+            if [ "$(uname -s)" = "Darwin" ]
             then
                 git_credential='osxkeychain'
             fi
 
             user " - What is your github author name for $git_profile?"
-            read -e git_authorname
+            read -r -e git_authorname
             user " - What is your github author email for $git_profile?"
-            read -e git_authoremail
+            read -r -e git_authoremail
             user " - What is your GPG Signing Key for $git_profile?"
-            read -e git_signing_key
+            read -r -e git_signing_key
 
-            sed -e "s/AUTHORNAME/$git_authorname/g" -e "s/AUTHOREMAIL/$git_authoremail/g" -e "s/AUTHORKEY/$git_signing_key" -e "s/GIT_CREDENTIAL_HELPER/$git_credential/g" git/gitconfig.local.symlink.example > git/gitconfig.$git_profile.symlink
+            sed -e "s/AUTHORNAME/$git_authorname/g" -e "s/AUTHOREMAIL/$git_authoremail/g" -e "s/AUTHORKEY/$git_signing_key" -e "s/GIT_CREDENTIAL_HELPER/$git_credential/g" git/gitconfig.local.symlink.example > git/gitconfig."$git_profile".symlink
 
             success 'gitconfig'
         fi 
@@ -70,17 +71,18 @@ setup_gitconfig () {
 link_file () {
   local src=$1 dst=$2
 
-  local overwrite= backup= skip=
+  local overwrite='' backup='' skip=''
 
-  if [ -f "$dst" -o -d "$dst" -o -L "$dst" ]
+  if [[ -f "$dst" || -d "$dst" || -L "$dst" ]]
   then
 
-    if [ "$overwrite_all" == "false" ] && [ "$backup_all" == "false" ] && [ "$skip_all" == "false" ]
+    if [ "$overwrite_all" = "false" ] && [ "$backup_all" = "false" ] && [ "$skip_all" = "false" ]
     then
 
-      local currentSrc="$(readlink $dst)"
+      local currentSrc
+      currentSrc="$(readlink "$dst")"
 
-      if [ "$currentSrc" == "$src" ]
+      if [ "$currentSrc" = "$src" ]
       then
 
         skip=true;
@@ -91,7 +93,7 @@ link_file () {
         [s]kip, [S]kip all, [o]verwrite, [O]verwrite all, [b]ackup, [B]ackup all?"
 
         if [[ -z "$action" ]]; then
-          read -n 1 action
+          read -r -n 1 action
         fi
 
         case "$action" in
@@ -119,19 +121,19 @@ link_file () {
     backup=${backup:-$backup_all}
     skip=${skip:-$skip_all}
 
-    if [ "$overwrite" == "true" ]
+    if [ "$overwrite" = "true" ]
     then
       rm -rf "$dst"
       success "removed $dst"
     fi
 
-    if [ "$backup" == "true" ]
+    if [ "$backup" = "true" ]
     then
       mv "$dst" "${dst}.backup"
       success "moved $dst to ${dst}.backup"
     fi
 
-    if [ "$skip" == "true" ]
+    if [ "$skip" = "true" ]
     then
       success "skipped $src"
     fi
@@ -139,8 +141,11 @@ link_file () {
 
   if [ "$skip" != "true" ]  # "false" or empty
   then
-    ln -s "$src" "$dst"
-    success "linked $src to $dst"
+    if ln -s "$src" "$dst" 2>/dev/null; then
+        success "linked $src to $dst"
+    else
+        fail "failed to link $src to $dst"
+    fi
   fi
 }
 
@@ -149,16 +154,15 @@ install_dotfiles () {
 
   local overwrite_all=false backup_all=false skip_all=false
 
-  for src in $(find -H "$DOTFILES_ROOT" -maxdepth 2 -name '*.symlink' -not -path '*.git*')
-  do
+  # Use null-delimited find to handle filenames with spaces
+  while IFS= read -r -d '' src; do
     if [ -d "$src" ]; then
         if [ ! -L "$HOME/.$(basename "${src%.*}")" ]; then
-            for file in $(find -H "$src" -maxdepth 2 -name '*.symlink' -not -path '*.git*')
-            do
+            while IFS= read -r -d '' file; do
                 #dst=$HOME/.$(basename "${src%.*}")/$(basename ${file%.*})
                 dst=$HOME/.$(basename "${src%.*}")
                 link_file "$file" "$dst"
-            done
+            done < <(find -H "$src" -maxdepth 2 -name '*.symlink' -not -path '*.git*' -print0)
             continue
         else
             continue
@@ -166,7 +170,7 @@ install_dotfiles () {
     fi
     dst="$HOME/.$(basename "${src%.*}")"
     link_file "$src" "$dst"
-  done
+  done < <(find -H "$DOTFILES_ROOT" -maxdepth 2 -name '*.symlink' -not -path '*.git*' -print0)
 }
 
 displayUsageAndExit() {
@@ -206,20 +210,20 @@ while test $# -gt 0; do
 done
 
 
-setup_gitconfig $1
+setup_gitconfig "$1"
 install_dotfiles
 
 # If the .bashrc isn't linked then it won't load the dotfiles.
 # Manually load in current .bashrc
-if [ ! -L $HOME/.bashrc ]
+if [ ! -L "$HOME/.bashrc" ]
 then
-    echo "export DOTFILES_ROOT=$DOTFILES_ROOT" >> $HOME/.bashrc
-    echo "source $DOTFILES_ROOT/script/dotfiles.sh" >> $HOME/.bashrc
+    echo "export DOTFILES_ROOT=$DOTFILES_ROOT" >> "$HOME/.bashrc"
+    echo "source $DOTFILES_ROOT/script/dotfiles.sh" >> "$HOME/.bashrc"
 fi 
 
 
 # If we're on a Mac, let's install and setup homebrew.
-if [ "$(uname -s)" == "Linux" ]
+if [ "$(uname -s)" = "Linux" ]
 then
   info "installing dependencies"
   if source bin/dot | while read -r data; do info "$data"; done

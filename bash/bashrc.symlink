@@ -20,4 +20,5 @@ then
     source ~/.localrc
 fi
 
-. "$HOME/.cargo/env"
+# Set GPG_TTY for pass to work correctly
+export GPG_TTY="$(tty)"

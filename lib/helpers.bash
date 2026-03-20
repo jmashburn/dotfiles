@@ -1,3 +1,8 @@
+#!/usr/bin/env bash
+# shellcheck disable=SC2154  # Color variables are sourced from colors.bash
+# Library: Utility functions for dotfiles (validation, user interaction, path management)
+#
+
 function _is_sudo {
     if [[ $(id -u) -ne 0 ]]; then
         _die "This script must be run as root!"
@@ -5,25 +10,25 @@ function _is_sudo {
 }
 
 function _echo_info {
-    echo -e "${echo_green}$@${reset}"
+    echo -e "${echo_green}$*${reset}"
 }
 
 function _echo_important {
-    echo -e "${echo_yellow}$@${reset}"
+    echo -e "${echo_yellow}$*${reset}"
 }
 
 function _echo_warn {
-    echo -e "${echo_red}$@${reset}"
+    echo -e "${echo_red}$*${reset}"
 }
 
 function _die {
-    echo >&2 -e "${echo_red}$@${reset}"
+    echo >&2 -e "${echo_red}$*${reset}"
     exit 1
 }
 
 function _is_command_is_available {
     local cmd=${1}
-    type ${cmd} >/dev/null 2>&1 || _die "Canceling because required command '${cmd}' is not available."
+    command -v "${cmd}" >/dev/null 2>&1 || _die "Canceling because required command '${cmd}' is not available."
 }
 
 function _is_file_exists {
@@ -44,7 +49,7 @@ function _ask_to_continue {
   local msg=${1}
   local waitingforanswer=true
   while ${waitingforanswer}; do
-    read -p "${msg} (hit 'y/Y' to continue, 'n/N' to cancel) " -n 1 ynanswer
+    read -r -p "${msg} (hit 'y/Y' to continue, 'n/N' to cancel) " -n 1 ynanswer
     case ${ynanswer} in
       [Yy] ) waitingforanswer=false; break;;
       [Nn] ) echo ""; _die "Operation cancelled as requested!";;
@@ -64,7 +69,7 @@ function _ask_for_password {
   local PROMPT=''
   local CHAR=''
   local PASSWORD=''
-  while IFS= read -p "${PROMPT}" -r -s -n 1 CHAR
+  while IFS= read -r -p "${PROMPT}" -r -s -n 1 CHAR
   do
     # Enter -> accept password
     if [[ ${CHAR} == $'\0' ]] ; then
@@ -87,7 +92,7 @@ function _ask_for_password {
     fi
   done
   stty echo
-  readonly ${VARIABLE_NAME}=${PASSWORD}
+  readonly "${VARIABLE_NAME}"="${PASSWORD}"
   echo
 }
 # Print to the Screen
@@ -106,7 +111,7 @@ function _ask_for_password_twice {
     _die "Error: password mismatch"
   fi
 
-  readonly ${VARIABLE_NAME}="${!VARIABLE_NAME_2}"
+  readonly "${VARIABLE_NAME}"="${!VARIABLE_NAME_2}"
 }
 
 
@@ -114,9 +119,9 @@ function _replace_in_files {
 
   local search=${1}
   local replace=${2}
-  local files=${@:3}
+  local files=( "${@:3}" )
 
-  for file in ${files[@]}; do
+  for file in "${files[@]}"; do
     if [[ -e "${file}" ]]; then
       if ( grep --fixed-strings --quiet "${search}" "${file}" ); then
         perl -pi -e "s/\Q${search}/${replace}/g" "${file}"
@@ -132,7 +137,7 @@ function _replace_in_files {
 
 
 function _command_exists() {
-	local msg="${2:-Command '$1' does not exist}"
+	local msg="${2:-Command \"$1\" does not exist}"
 	if type -t "$1" > /dev/null; then
 		return 0
 	else
@@ -141,7 +146,7 @@ function _command_exists() {
 }
 
 function _is_function() {
-	local msg="${2:-Function '$1' does not exist}"
+	local msg="${2:-Function \"$1\" does not exist}"
 	if LC_ALL=C type -t "$1" | _fgrep -q 'function'; then
 		return 0
 	else
@@ -347,8 +352,10 @@ EOF
 function autoload() {
     [ -f "$1" ] || { echo "Usage ${FUNCNAME[0]} <filename>"; return 1;}
     filename="$1"
-    loadname="$(sed 's:\..*::' <<< $(basename $filename))"
-    if [ -z "$(eval echo \${${loadname}_loaded})" ]; then
+    local basename_file
+    basename_file="$(basename "$filename")"
+    loadname="${basename_file%%.*}"
+    if [ -z "$(eval echo "\${${loadname}_loaded}")" ]; then
         functions=$(command grep -o "^[a-zA-Z0-9_:]* *()" $filename | sed 's/()//')
         for f in $functions; do
             eval "

@@ -1,3 +1,6 @@
+# Library: Git utility functions and shortcuts
+#
+
 function _git-symbolic-ref() {
 	git symbolic-ref -q HEAD 2> /dev/null
 }

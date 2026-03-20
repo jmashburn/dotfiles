@@ -21,3 +21,8 @@ claude/shell-snapshots/
 claude/tasks/
 claude/todos/
 claude/ide/
+
+# Backup files from improvements
+.backups/
+**/*.backup
+**/*.backup-medium

@@ -1,4 +1,11 @@
 #!/usr/bin/env bash
+# shellcheck disable=SC1090,SC1091  # Dynamic sourcing is intentional
+
+# Validate DOTFILES_ROOT is set
+if [[ -z "${DOTFILES_ROOT:-}" ]]; then
+    echo "ERROR: DOTFILES_ROOT is not set" >&2
+    return 1
+fi
 # Load composure first, so we support function metadata
 # shellcheck source-path=SCRIPTDIR/vendor/github.com/erichs/composure
 source "${DOTFILES_ROOT}/vendor/github.com/erichs/composure/composure.sh"

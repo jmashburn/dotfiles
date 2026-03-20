@@ -1,11 +1,17 @@
-#!/bin/bash
+#!/usr/bin/env bash
+#
+# Description: Install AWS CLI tools
+# Dependencies: curl, unzip, python3
+#
+
+set -euo pipefail
+
 # 
 # Install AWSCli
 #
 # This install some of the common dependencies needed for using awscli
 #
 #
-set -e
 BIN_DIR="$HOME/.bin"
 source $DOTFILES_ROOT/aws/path.bash
 

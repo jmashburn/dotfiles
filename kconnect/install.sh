@@ -1,4 +1,11 @@
-#!/bin/bash
+#!/usr/bin/env bash
+#
+# Description: Install kconnect for Kubernetes
+# Dependencies: curl
+#
+
+set -euo pipefail
+
 #
 # KConnect
 #

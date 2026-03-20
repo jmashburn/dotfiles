@@ -1,4 +1,11 @@
-#!/bin/bash
+#!/usr/bin/env bash
+#
+# Description: Install git-related tools
+# Dependencies: git
+#
+
+set -euo pipefail
+
 #
 # Diff-so-fancy
 #

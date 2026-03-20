@@ -1,3 +1,6 @@
+# Library: Color definitions for terminal output
+#
+
 # shellcheck shell=bash
 # shellcheck disable=SC2034
 #

@@ -1,4 +1,11 @@
-#!/bin/bash -e
+#!/usr/bin/env bash
+#
+# Description: Install Go programming language
+# Dependencies: curl, tar
+#
+
+set -euo pipefail
+
 
 # This script installs or updates to the latest version of Go.
 # Multi-platform (Linux and macOS)

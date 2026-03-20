@@ -1,4 +1,11 @@
-#!/bin/bash
+#!/usr/bin/env bash
+#
+# Description: Install OpenTofu
+# Dependencies: curl
+#
+
+set -euo pipefail
+
 #
 # OpenTofu
 #
