@@ -1,0 +1,19 @@
+{
+  "statusLine": {
+      "type": "command",
+      "command": "~/.claude/statusline.sh"
+  },
+  "permissions": {
+    "allow": [
+      "Bash(git:*)",
+      "Bash(curl:*)",
+      "Bash(sleep:*)",
+      "Bash(oc:*)",
+      "Bash(mpp:*)",
+      "Bash(sqlite3:*)",
+      "Bash(chmod +x:*)",
+      "Bash(mkdir:*)",
+      "Bash(echo:*)"
+    ]
+  }
+}

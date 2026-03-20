@@ -1,0 +1,19 @@
+# Exclude machine-specific and sensitive Claude Code files
+settings.local.json
+history.jsonl
+stats-cache.json
+projects/
+sessions/
+session-env/
+cache/
+backups/
+debug/
+downloads/
+file-history/
+paste-cache/
+plans/
+plugins/
+shell-snapshots/
+tasks/
+todos/
+ide/

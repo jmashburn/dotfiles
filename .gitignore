@@ -1,2 +1,23 @@
 git/gitconfig.*.symlink
 fidelity
+
+# Claude Code - exclude machine-specific files anywhere in the repo
+**/.claude/settings.local.json
+claude/settings.local.json
+claude/history.jsonl
+claude/stats-cache.json
+claude/projects/
+claude/sessions/
+claude/session-env/
+claude/cache/
+claude/backups/
+claude/debug/
+claude/downloads/
+claude/file-history/
+claude/paste-cache/
+claude/plans/
+claude/plugins/
+claude/shell-snapshots/
+claude/tasks/
+claude/todos/
+claude/ide/
