@@ -22,12 +22,12 @@ if ! echo "$input" | jq empty 2>/dev/null; then
 fi
 
 # Extract key information using jq
-CURRENT_DIR=$(echo "$input" | jq -r '.workspace.current_dir // "~"')
-MODEL=$(echo "$input" | jq -r '.model.name // "claude"')
-CONTEXT_PCT=$(echo "$input" | jq -r '.context_window.percent_used // 0')
-TOKENS_USED=$(echo "$input" | jq -r '.context_window.tokens_used // 0')
-TOKENS_TOTAL=$(echo "$input" | jq -r '.context_window.tokens_total // 0')
-COST=$(echo "$input" | jq -r '.cost.usd // 0')
+CURRENT_DIR=$(echo "$input" | jq -r '.workspace.current_dir // .cwd // "~"')
+MODEL=$(echo "$input" | jq -r '.model.display_name // .model.name // "claude"')
+CONTEXT_PCT=$(echo "$input" | jq -r '.context_window.used_percentage // 0')
+TOKENS_TOTAL=$(echo "$input" | jq -r '.context_window.context_window_size // 0')
+TOKENS_USED=$(echo "$input" | jq -r 'if .context_window.context_window_size > 0 then (.context_window.used_percentage / 100 * .context_window.context_window_size | floor) else 0 end')
+COST=$(echo "$input" | jq -r '.cost.total_cost_usd // 0')
 VIM_MODE=$(echo "$input" | jq -r '.vim.mode // ""')
 AGENT=$(echo "$input" | jq -r '.agent.name // ""')
 WORKTREE=$(echo "$input" | jq -r '.worktree.name // ""')

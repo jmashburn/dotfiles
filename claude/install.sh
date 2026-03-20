@@ -36,3 +36,28 @@ else
 fi
 
 echo "✓ Claude Code dependencies installed successfully"
+
+# Register local plugin
+PLUGIN_DIR="$HOME/.claude/plugins/local"
+DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+echo "Registering jared-workflow plugin..."
+mkdir -p "$PLUGIN_DIR"
+ln -sfn "$DOTFILES_DIR" "$PLUGIN_DIR/jared-workflow"
+
+INSTALLED_PLUGINS="$HOME/.claude/plugins/installed_plugins.json"
+if [[ -f "$INSTALLED_PLUGINS" ]] && command -v jq &>/dev/null; then
+    if ! jq -e '.plugins["jared-workflow@local"]' "$INSTALLED_PLUGINS" &>/dev/null; then
+        tmp=$(mktemp)
+        jq --arg path "$PLUGIN_DIR/jared-workflow" \
+           '.plugins["jared-workflow@local"] = [{"scope":"user","installPath":$path,"version":"local","installedAt":"2026-03-20T00:00:00.000Z","lastUpdated":"2026-03-20T00:00:00.000Z"}]' \
+           "$INSTALLED_PLUGINS" > "$tmp" && mv "$tmp" "$INSTALLED_PLUGINS"
+        echo "  Registered in installed_plugins.json"
+    else
+        echo "  Already registered"
+    fi
+else
+    echo "  Skipping installed_plugins.json update (file not found or jq missing)"
+fi
+
+echo "✓ jared-workflow plugin installed"
