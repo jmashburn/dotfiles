@@ -277,60 +277,57 @@ EOF
         fi
     fi
 
-    # shellcheck disable=SC2046
-    eval "$(
-        while getopts "pas:" o; do :; done
-        shift $((OPTIND - 1))
-        test -z "$2" && echo 'PATH' || echo "$1"
-    )"=\"$(
-        A=0     # append flag
-        S=":"   # separator
+    # Parse options outside of command substitution for Bash 3.2 compatibility
+    local A=0     # append flag (0=prepend, 1=append)
+    local S=":"   # separator
+    local OPTIND=1
 
-        while getopts "pas:" o; do
-            case "$o" in 
-                p) A=0 ;;
-                a) A=1 ;;
-                s) S="$OPTARG" ;;
-                ?)
-                    >&2 echo "pathmunge: error: unknown options '$o'"
-                    return
-                    ;;
-            esac
-        done
-        shift $((OPTIND - 1))
-
-        if [ -z "$2" ]; then
-            var='PATH'
-            new="$1"
-        else
-            var="$1"
-            new="$2"
+    while getopts "pas:" o; do
+        if [ "$o" = "p" ]; then
+            A=0
+        elif [ "$o" = "a" ]; then
+            A=1
+        elif [ "$o" = "s" ]; then
+            S="$OPTARG"
         fi
+    done
 
-        old=
-        eval old="\$$var"
+    shift $((OPTIND - 1))
 
-        case "${S}${old}${S}" in
-            *"${S}${new}${S}"*)
-                updated="$old"
-                ;;
-            "${S}${S}")
-                updated="$new"
-                ;;
-            *)
-                if [ "$A" -eq 0 ]; then
-                    updated="${new}${S}${old}"
-                else
-                    updated="${old}${S}${new}"
-                fi
-                ;;
-        esac
+    # Determine variable name and new value
+    local var new
+    if [ -z "$2" ]; then
+        var='PATH'
+        new="$1"
+    else
+        var="$1"
+        new="$2"
+    fi
 
-        echo "$updated" | sed \
-            -e 's+\\+\\\\\\+g' \
-            -e 's/\$/\\$/g' \
-            -e 's/"/\\"/g'
-    )\"
+    # Get current value
+    local old
+    eval old="\$$var"
+
+    # Build updated value
+    local updated
+    case "${S}${old}${S}" in
+        *"${S}${new}${S}"*)
+            updated="$old"
+            ;;
+        "${S}${S}")
+            updated="$new"
+            ;;
+        *)
+            if [ "$A" -eq 0 ]; then
+                updated="${new}${S}${old}"
+            else
+                updated="${old}${S}${new}"
+            fi
+            ;;
+    esac
+
+    # Set the variable
+    eval "$var=\"$updated\""
 }
 
 #function _pathmunge() {
