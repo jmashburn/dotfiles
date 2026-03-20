@@ -9,7 +9,7 @@ set -o pipefail
 GPG_OPTS=( $PASSWORD_STORE_GPG_OPTS "--quiet" "--yes" "--compress-algo=none" "--no-encrypt-to" )
 GPG="gpg"
 export GPG_TTY="${GPG_TTY:-$(tty 2>/dev/null)}"
-which gpg2 &>/dev/null && GPG="gpg2"
+command -v gpg2 &>/dev/null && GPG="gpg2"
 [[ -n $GPG_AGENT_INFO || $GPG == "gpg2" ]] && GPG_OPTS+=( "--batch" "--use-agent" )
 
 PREFIX="${PASSWORD_STORE_DIR:-$HOME/.password-store}"
@@ -70,6 +70,7 @@ verify_file() {
 set_gpg_recipients() {
 	GPG_RECIPIENT_ARGS=( )
 	GPG_RECIPIENTS=( )
+	local gpg_id
 
 	if [[ -n $PASSWORD_STORE_KEY ]]; then
 		for gpg_id in $PASSWORD_STORE_KEY; do
@@ -98,7 +99,6 @@ set_gpg_recipients() {
 
 	verify_file "$current"
 
-	local gpg_id
 	while read -r gpg_id; do
 		gpg_id="${gpg_id%%#*}" # strip comment
 		[[ -n $gpg_id ]] || continue
@@ -129,7 +129,7 @@ reencrypt_path() {
 			done
 			gpg_keys="$($GPG $PASSWORD_STORE_GPG_OPTS --list-keys --with-colons "${GPG_RECIPIENTS[@]}" | sed -n 's/^sub:[^idr:]*:[^:]*:[^:]*:\([^:]*\):[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:[a-zA-Z]*e[a-zA-Z]*:.*/\1/p' | LC_ALL=C sort -u)"
 		fi
-		current_keys="$(LC_ALL=C $GPG $PASSWORD_STORE_GPG_OPTS -v --no-secmem-warning --no-permission-warning --decrypt --list-only --keyid-format long "$passfile" 2>&1 | sed -n 's/^gpg: public key is \([A-F0-9]\+\)$/\1/p' | LC_ALL=C sort -u)"
+		current_keys="$(LC_ALL=C $GPG $PASSWORD_STORE_GPG_OPTS -v --no-secmem-warning --no-permission-warning --decrypt --list-only --keyid-format long "$passfile" 2>&1 | sed -nE 's/^gpg: public key is ([A-F0-9]+)$/\1/p' | LC_ALL=C sort -u)"
 
 		if [[ $gpg_keys != "$current_keys" ]]; then
 			echo "$passfile_display: reencrypting to ${gpg_keys//$'\n'/ }"
@@ -137,7 +137,7 @@ reencrypt_path() {
 			mv "$passfile_temp" "$passfile" || rm -f "$passfile_temp"
 		fi
 		prev_gpg_recipients="${GPG_RECIPIENTS[*]}"
-	done < <(find "$1" -path '*/.git' -prune -o -iname '*.gpg' -print0)
+	done < <(find "$1" -path '*/.git' -prune -o -path '*/.extensions' -prune -o -iname '*.gpg' -print0)
 }
 check_sneaky_paths() {
 	local path
@@ -155,7 +155,7 @@ check_sneaky_paths() {
 #
 
 clip() {
-	if [[ -n $WAYLAND_DISPLAY ]]; then
+	if [[ -n $WAYLAND_DISPLAY ]] && command -v wl-copy &> /dev/null; then
 		local copy_cmd=( wl-copy )
 		local paste_cmd=( wl-paste -n )
 		if [[ $X_SELECTION == primary ]]; then
@@ -163,12 +163,12 @@ clip() {
 			paste_cmd+=( --primary )
 		fi
 		local display_name="$WAYLAND_DISPLAY"
-	elif [[ -n $DISPLAY ]]; then
+	elif [[ -n $DISPLAY ]] && command -v xclip &> /dev/null; then
 		local copy_cmd=( xclip -selection "$X_SELECTION" )
 		local paste_cmd=( xclip -o -selection "$X_SELECTION" )
 		local display_name="$DISPLAY"
 	else
-		die "Error: No X11 or Wayland display detected"
+		die "Error: No X11 or Wayland display and clipper detected"
 	fi
 	local sleep_argv0="password store sleep on display $display_name"
 
@@ -402,7 +402,7 @@ cmd_show() {
 		else
 			echo "${path%\/}"
 		fi
-		tree -N -C -l --noreport "$PREFIX/$path" | tail -n +2 | sed -E 's/\.gpg(\x1B\[[0-9]+m)?( ->|$)/\1\2/g' # remove .gpg at end of line, but keep colors
+		tree -N -C -l --noreport "$PREFIX/$path" 3>&- | tail -n +2 | sed -E 's/\.gpg(\x1B\[[0-9]+m)?( ->|$)/\1\2/g' # remove .gpg at end of line, but keep colors
 	elif [[ -z $path ]]; then
 		die "Error: password store is empty. Try \"pass init\"."
 	else
@@ -414,7 +414,7 @@ cmd_find() {
 	[[ $# -eq 0 ]] && die "Usage: $PROGRAM $COMMAND pass-names..."
 	IFS="," eval 'echo "Search Terms: $*"'
 	local terms="*$(printf '%s*|*' "$@")"
-	tree -N -C -l --noreport -P "${terms%|*}" --prune --matchdirs --ignore-case "$PREFIX" | tail -n +2 | sed -E 's/\.gpg(\x1B\[[0-9]+m)?( ->|$)/\1\2/g'
+	tree -N -C -l --noreport -P "${terms%|*}" --prune --matchdirs --ignore-case "$PREFIX" 3>&- | tail -n +2 | sed -E 's/\.gpg(\x1B\[[0-9]+m)?( ->|$)/\1\2/g'
 }
 
 cmd_grep() {
@@ -430,7 +430,7 @@ cmd_grep() {
 		passfile="${passfile##*/}"
 		printf "\e[94m%s\e[1m%s\e[0m:\n" "$passfile_dir" "$passfile"
 		echo "$grepresults"
-	done < <(find -L "$PREFIX" -path '*/.git' -prune -o -iname '*.gpg' -print0)
+	done < <(find -L "$PREFIX" -path '*/.git' -prune -o -path '*/.extensions' -prune -o -iname '*.gpg' -print0)
 }
 
 cmd_insert() {

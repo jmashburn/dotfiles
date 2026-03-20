@@ -6,6 +6,8 @@
 	# https://blog.github.com/2016-03-28-git-2-8-has-been-released/#dont-guess-my-identity
 	# https://git-scm.com/docs/git-config#Documentation/git-config.txt-useruseConfigOnly
     useConfigOnly = true
+	email = jmashbur@redhat.com
+	name = Jared Mash
 
 [advice]
     addEmptyPathspec = false
