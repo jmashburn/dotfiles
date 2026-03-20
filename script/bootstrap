@@ -9,6 +9,12 @@ export DOTFILES_ROOT=$DOTFILES_ROOT
 set -euo pipefail
 trap 'fail "Error on line $LINENO"' ERR
 
+# Initialize option variables
+overwrite_all=false
+backup_all=false
+skip_all=false
+action=""
+
 echo ''
 
 info () {
@@ -152,7 +158,8 @@ link_file () {
 install_dotfiles () {
   info 'installing dotfiles'
 
-  local overwrite_all=false backup_all=false skip_all=false
+  # Use global variables set by command line options
+  # local overwrite_all=false backup_all=false skip_all=false
 
   # Use null-delimited find to handle filenames with spaces
   while IFS= read -r -d '' src; do
@@ -194,12 +201,15 @@ while test $# -gt 0; do
             ;;
         "-O")
             action="O"
+            overwrite_all=true
             ;;
         "-B")
             action="B"
+            backup_all=true
             ;;
         "-S")
             action="S"
+            skip_all=true
             ;;
         *)
             echo "Invalid option: $1"
@@ -210,7 +220,7 @@ while test $# -gt 0; do
 done
 
 
-setup_gitconfig "$1"
+setup_gitconfig "${1:-}"
 install_dotfiles
 
 # If the .bashrc isn't linked then it won't load the dotfiles.
