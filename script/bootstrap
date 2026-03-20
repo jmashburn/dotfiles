@@ -165,11 +165,15 @@ install_dotfiles () {
   while IFS= read -r -d '' src; do
     if [ -d "$src" ]; then
         if [ ! -L "$HOME/.$(basename "${src%.*}")" ]; then
+            # Create directory if it doesn't exist
+            mkdir -p "$HOME/.$(basename "${src%.*}")"
+            # Find files (not directories) in the .symlink directory
             while IFS= read -r -d '' file; do
-                #dst=$HOME/.$(basename "${src%.*}")/$(basename ${file%.*})
-                dst=$HOME/.$(basename "${src%.*}")
-                link_file "$file" "$dst"
-            done < <(find -H "$src" -maxdepth 2 -name '*.symlink' -not -path '*.git*' -print0)
+                if [ -f "$file" ]; then
+                    dst="$HOME/.$(basename "${src%.*}")/$(basename "$file")"
+                    link_file "$file" "$dst"
+                fi
+            done < <(find -H "$src" -maxdepth 1 -type f -not -path '*.git*' -print0)
             continue
         else
             continue
