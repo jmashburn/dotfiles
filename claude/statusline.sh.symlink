@@ -1,8 +1,25 @@
 #!/bin/bash
 # Enhanced Claude Code statusline
 # Receives JSON session info on stdin and outputs formatted statusline
+# Requires: jq, bc
 
+# Check dependencies
+if ! command -v jq &> /dev/null; then
+    echo "⚠️  statusline: jq not found"
+    exit 1
+fi
+
+if ! command -v bc &> /dev/null; then
+    echo "⚠️  statusline: bc not found"
+    exit 1
+fi
+
+# Validate input
 input=$(cat)
+if ! echo "$input" | jq empty 2>/dev/null; then
+    echo "⚠️  statusline: invalid JSON input"
+    exit 1
+fi
 
 # Extract key information using jq
 CURRENT_DIR=$(echo "$input" | jq -r '.workspace.current_dir // "~"')
@@ -74,7 +91,7 @@ fi
 # Join components with separator
 output=""
 for i in "${!components[@]}"; do
-    if [ $i -eq 0 ]; then
+    if [[ $i -eq 0 ]]; then
         output="${components[$i]}"
     else
         output="$output │ ${components[$i]}"
