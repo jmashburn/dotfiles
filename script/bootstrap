@@ -165,15 +165,25 @@ install_dotfiles () {
   while IFS= read -r -d '' src; do
     if [ -d "$src" ]; then
         if [ ! -L "$HOME/.$(basename "${src%.*}")" ]; then
-            # Create directory if it doesn't exist
-            mkdir -p "$HOME/.$(basename "${src%.*}")"
-            # Find files (not directories) in the .symlink directory
-            while IFS= read -r -d '' file; do
-                if [ -f "$file" ]; then
-                    dst="$HOME/.$(basename "${src%.*}")/$(basename "$file")"
-                    link_file "$file" "$dst"
+            # Create base directory if it doesn't exist
+            base_dst="$HOME/.$(basename "${src%.*}")"
+            mkdir -p "$base_dst"
+
+            # Find all files and directories recursively in the .symlink directory
+            while IFS= read -r -d '' item; do
+                # Get relative path from the .symlink directory
+                rel_path="${item#$src/}"
+
+                if [ -d "$item" ]; then
+                    # Create directory structure
+                    mkdir -p "$base_dst/$rel_path"
+                elif [ -f "$item" ]; then
+                    # Ensure parent directory exists
+                    mkdir -p "$(dirname "$base_dst/$rel_path")"
+                    # Link file preserving directory structure
+                    link_file "$item" "$base_dst/$rel_path"
                 fi
-            done < <(find -H "$src" -maxdepth 1 -type f -not -path '*.git*' -print0)
+            done < <(find -H "$src" -mindepth 1 -not -path '*.git*' -print0)
             continue
         else
             continue
