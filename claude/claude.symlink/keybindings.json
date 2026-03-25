@@ -1,0 +1,59 @@
+{
+  "keybindings": [
+    {
+      "key": "ctrl+x ctrl+k",
+      "command": "chat:killAgents",
+      "description": "Stop all running agents (v2.1.82+)"
+    },
+    {
+      "key": "ctrl+shift+f",
+      "command": "chat:fastMode",
+      "description": "Toggle fast mode"
+    },
+    {
+      "key": "ctrl+x ctrl+e",
+      "command": "chat:openExternalEditor",
+      "description": "Open external editor (readline-native, v2.1.82+)"
+    },
+    {
+      "key": "ctrl+l",
+      "command": "chat:clearScreen",
+      "description": "Clear screen and force redraw (v2.1.82+)"
+    },
+    {
+      "key": "ctrl+shift+p",
+      "command": "chat:enterPlanMode",
+      "description": "Enter plan mode"
+    },
+    {
+      "key": "ctrl+shift+e",
+      "command": "chat:exitPlanMode",
+      "description": "Exit plan mode"
+    },
+    {
+      "key": "ctrl+shift+w",
+      "command": "chat:enterWorktree",
+      "description": "Enter worktree mode"
+    },
+    {
+      "key": "ctrl+shift+x",
+      "command": "chat:exitWorktree",
+      "description": "Exit worktree mode"
+    },
+    {
+      "key": "ctrl+shift+c",
+      "command": "chat:clearChat",
+      "description": "Clear current chat"
+    },
+    {
+      "key": "ctrl+shift+n",
+      "command": "chat:newChat",
+      "description": "Start new chat"
+    },
+    {
+      "key": "ctrl+shift+s",
+      "command": "chat:exportChat",
+      "description": "Export chat to markdown"
+    }
+  ]
+}
