@@ -4,6 +4,14 @@ argument-hint: Optional specific area or concern to focus the review on
 allowed-tools: ["Read", "Bash", "Grep", "Glob"]
 ---
 
+## Changes to Review
+
+!`git diff --name-only main...HEAD`
+
+## Detailed Diff
+
+!`git diff main...HEAD`
+
 # /review — Post-Implementation Review
 
 Your job is to run a structured review of recent changes and produce a clear pass/fail verdict before marking any task complete.
