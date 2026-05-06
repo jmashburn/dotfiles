@@ -46,10 +46,12 @@
   "sandbox": {
     "failIfUnavailable": false
   },
+  "effortLevel": "medium",
   "showClearContextOnPlanAccept": true,
   "autoDreamEnabled": true,
   "vim": {
     "enabled": true
   },
-  "effortLevel": "medium"
+  "theme": "dark-ansi",
+  "editorMode": "vim"
 }
