@@ -27,8 +27,7 @@ while test $# -gt 0; do
             displayUsageAndExit
             ;;
         "-e"|"--edit")
-            exit "$EDITOR" "$dotfilesDirectory"
-            exit
+            exec "$EDITOR" "$dotfilesDirectory"
             ;;
         *)
             echo "Invalid option: $1"

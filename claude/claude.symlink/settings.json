@@ -1,19 +1,11 @@
 {
-  "env": {
-    "CLAUDE_CODE_SUBPROCESS_ENV_SCRUB": "1"
-  },
+  "env": {},
   "permissions": {
-    "allow": [
-      "Bash(git:*)",
-      "Bash(curl:*)",
-      "Bash(sleep:*)",
-      "Bash(oc:*)",
-      "Bash(mpp:*)",
-      "Bash(sqlite3:*)",
-      "Bash(chmod +x:*)",
-      "Bash(mkdir:*)",
-      "Bash(echo:*)"
-    ]
+    "defaultMode": "dontAsk"
+  },
+  "attributions": {
+    "commit": "",
+    "pr": ""
   },
   "hooks": {
     "CwdChanged": [
@@ -43,15 +35,45 @@
     "type": "command",
     "command": "~/.claude/statusline.sh"
   },
+  "enabledPlugins": {
+    "frontend-design@claude-plugins-official": true,
+    "migrate-openstack-to-openshift@redhat-itup-skills": true
+  },
+  "extraKnownMarketplaces": {
+    "redhat-itup-skills": {
+      "source": {
+        "source": "git",
+        "url": "https://gitlab.cee.redhat.com/it-cloud-openshift/openstack-rdu2-exit/ai-automation-skills.git"
+      },
+      "autoUpdate": true
+    }
+  },
   "sandbox": {
     "failIfUnavailable": false
   },
-  "effortLevel": "medium",
+  "effortLevel": "high",
   "showClearContextOnPlanAccept": true,
+  "askUserQuestionTimeout": "60s",
   "autoDreamEnabled": true,
+  "skipWorkflowUsageWarning": true,
+  "theme": "dark-ansi",
+  "editorMode": "vim",
+  "autoCompactEnabled": false,
   "vim": {
     "enabled": true
   },
-  "theme": "dark-ansi",
-  "editorMode": "vim"
+  "mcpServers": {
+    "marvin": {
+      "command": "node",
+      "args": [
+        "/Volumes/Code/marvin-mcp/dist/index.js"
+      ],
+      "env": {
+        "MARVIN_API_URL": "http://localhost:8080",
+        "MARVIN_SITE_CLIENT_TOKEN": "marvin_sk_7AKGwi9xxIrieRo28RyQUxBjy5XRhNgOSjpHsPsqEkw",
+        "MARVIN_WORKSPACE_SLUG": "mash-burn-co"
+      }
+    }
+  },
+  "model": "claude-sonnet-4-6[1m]"
 }

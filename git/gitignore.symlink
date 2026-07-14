@@ -2,3 +2,5 @@
 .netrwhist
 *~
 *.swp
+
+**/.claude/settings.local.json

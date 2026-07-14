@@ -1,13 +1,4 @@
-# The rest of my fun git aliases
-alias gl='git pull --prune'
-alias glog="git log --graph --pretty=format:'%Cred%h%Creset %an: %s - %Creset %C(yellow)%d%Creset %Cgreen(%cr)%Creset' --abbrev-commit --date=relative"
-alias gp='git push origin HEAD'
-
-# Remove `+` and `-` from start of diff lines; just rely upon color.
-alias gd='git diff --color | sed "s/^\([^-+ ]*\)[-+ ]/\\1/" | less -r'
-
 alias gcb='git copy-branch-name'
-alias gs='git status -sb' # upgrade your git if -sb breaks for you. it's fun.
 alias gac='git add -A && git commit -m'
 alias ge='git-edit-new'
 
@@ -105,7 +96,7 @@ alias ggui='git gui'
 # home
 alias ghm='cd "$(git rev-parse --show-toplevel)"' # Git home
 # appendage to ghm
-if ! _command_exists gh; then
+if ! command -v gh &>/dev/null; then
 	alias gh='ghm'
 fi
 
@@ -130,7 +121,7 @@ alias gpuo='git push --set-upstream origin'
 alias gpuoc='git push --set-upstream origin $(git symbolic-ref --short HEAD)'
 
 # pull
-alias gl='git pull'
+alias gl='git pull --prune'
 alias glum='git pull upstream $(get_default_branch)'
 alias gpl='git pull'
 alias gpp='git pull && git push'
@@ -147,7 +138,7 @@ alias grm='git rm'
 # rebase
 alias grb='git rebase'
 alias grbc='git rebase --continue'
-alias grm='git rebase $(get_default_branch)'
+alias grbd='git rebase $(get_default_branch)'
 alias grmi='git rebase $(get_default_branch) -i'
 alias grma='GIT_SEQUENCE_EDITOR=: git rebase  $(get_default_branch) -i --autosquash'
 alias gprom='git fetch origin $(get_default_branch) && git rebase origin/$(get_default_branch) && git update-ref refs/heads/$(get_default_branch) origin/$(get_default_branch)' # Rebase with latest remote
@@ -157,7 +148,7 @@ alias gus='git reset HEAD'
 alias gpristine='git reset --hard && git clean -dfx'
 
 # status
-alias gs='git status'
+alias gs='git status -sb'
 alias gss='git status -s'
 
 # shortlog
@@ -196,6 +187,29 @@ alias gsw='git switch'
 alias gswc='git switch --create'
 alias gswm='git switch $(get_default_branch)'
 alias gswt='git switch --track'
+
+# restore (git v2.23+ — modern replacement for checkout/reset for file ops)
+alias grs='git restore'
+alias grss='git restore --staged'
+alias grsa='git restore --staged --worktree'
+
+# worktree
+alias gwt='git worktree'
+alias gwta='git worktree add'
+alias gwtl='git worktree list'
+alias gwtrm='git worktree remove'
+
+# bisect
+alias gbi='git bisect'
+alias gbis='git bisect start'
+alias gbig='git bisect good'
+alias gbib='git bisect bad'
+alias gbir='git bisect reset'
+alias gbisk='git bisect skip'
+
+# wip — quick save/restore in-progress work
+alias gwip='git add -A && git commit -m "WIP [skip ci]"'
+alias gunwip='git log -1 --oneline | grep -q "WIP" && git reset HEAD~1'
 
 # tag
 alias gt='git tag'

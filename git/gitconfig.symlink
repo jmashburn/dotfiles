@@ -23,11 +23,11 @@
     last = log -1 HEAD
     lg = log --graph --oneline --decorate --all
     lol = log --graph --decorate --oneline --all
-    promote = !$BASH/bin/git-promote
-    rank-contributors = !$BASH/bin/git-rank-contributors
+    promote = !git-promote
+    rank-contributors = !git-rank-contributors
     st = status -sb
     unstage = reset HEAD --
-    wtf = !$BASH/bin/git-wtf
+    wtf = !git-wtf
 
     branches = branch --all
     tags = tag --list
@@ -42,7 +42,7 @@
     pushf = push --force-with-lease
 
     f = fetch --all --prune --jobs=16
-    detach = checkout --detatch
+    detach = checkout --detach
     m = mergetool --no-prompt --tool=vimdiff
 
     branches-with = for-each-ref --format='%(refname)' refs/heads/ --sort -committerdate --contains

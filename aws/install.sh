@@ -70,7 +70,7 @@ then
     elif [[ "$OSTYPE" == "darwin"* ]]; then
 
         # Mac OSX
-        awscli_url=$(echo "https://awscli.amazonaws.com/AWSCKUV2.pkg")
+        awscli_url=$(echo "https://awscli.amazonaws.com/AWSCLIV2.pkg")
         echo "awscli url: $awscli_url"
 
         # download
