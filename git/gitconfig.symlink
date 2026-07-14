@@ -176,6 +176,7 @@
     editor = vim
     excludesfile = ~/.gitignore
     preloadindex = true
+    hooksPath = ~/.dotfiles/git/hooks
     whitespace = error
 
 [credential]
