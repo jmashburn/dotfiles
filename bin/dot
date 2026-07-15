@@ -1,11 +1,11 @@
 #!/bin/bash
 #
-# dot
+# dot -- dotfiles management
 #
-# `dot` handles installation, updates.  Run it to make sure youre update to the latest
+# Run with no args to refresh symlinks and pull latest changes.
 #
 
-set -e 
+set -e
 
 parentDirectory="$(cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P)"
 dotfilesDirectory="$(cd "$( dirname "$parentDirectory" )" && pwd -P)"
@@ -16,10 +16,17 @@ displayUsageAndExit() {
     echo "Usage: dot [options]"
     echo ""
     echo "Options:"
-    echo " -e, --edit Open dotfiles directory for editing"
-    echo " -h, --help Show this message and exit"
+    echo "  -e, --edit       Open dotfiles directory for editing"
+    echo "  -t, --tools      Run tool installers (Go, AWS CLI, etc.)"
+    echo "  -h, --help       Show this message and exit"
+    echo ""
+    echo "Running dot with no options will:"
+    echo "  1. Pull latest changes from git"
+    echo "  2. Refresh all symlinks (skipping existing)"
     exit
 }
+
+run_tools=false
 
 while test $# -gt 0; do
     case "$1" in
@@ -29,6 +36,9 @@ while test $# -gt 0; do
         "-e"|"--edit")
             exec "$EDITOR" "$dotfilesDirectory"
             ;;
+        "-t"|"--tools")
+            run_tools=true
+            ;;
         *)
             echo "Invalid option: $1"
             displayUsageAndExit
@@ -37,5 +47,18 @@ while test $# -gt 0; do
     shift
 done
 
-echo "> script/install"
-$dotfilesDirectory/script/install
+# Pull latest
+echo "> Pulling latest changes"
+git -C "$dotfilesDirectory" pull --rebase --quiet
+
+# Refresh symlinks (skip existing)
+echo "> Refreshing symlinks"
+"$dotfilesDirectory/script/bootstrap" -S
+
+if [ "$run_tools" = "true" ]; then
+    echo "> Running tool installers"
+    "$dotfilesDirectory/script/install-tools"
+fi
+
+echo ""
+echo "  Done."
