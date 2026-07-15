@@ -7,6 +7,14 @@
 #   VAULT_METHOD - auth method used for `vault login` (default: oidc)
 
 _browse_vault() {
+    # Check required dependencies
+    for dep in vault fzf jq; do
+        if ! command -v "$dep" &>/dev/null; then
+            echo "vaultbrowser: '$dep' is required but not installed" >&2
+            return 1
+        fi
+    done
+
     # current_path will be set after VAULT_ROOT detection
 
     # Ensure VAULT_ADDR is set (prompt user if not). This mirrors the style of other prompts
@@ -46,7 +54,7 @@ _browse_vault() {
     fi 
 
     while [[ -z "$VAULT_USER" ]]; do
-        read -p "Username: " VAULT_USER
+        read -rp "Username: " VAULT_USER
         if [[ -z "$VAULT_USER" ]]; then
             echo "Username is required; please try again"
         fi
