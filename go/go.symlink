@@ -1,5 +1,0 @@
-# GoLang
-export GOROOT=/opt/go
-export PATH=$GOROOT/bin:$PATH
-export GOPATH=/opt/go/bin/.go
-export PATH=$GOPATH/bin:$PATH
