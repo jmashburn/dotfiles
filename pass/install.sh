@@ -42,3 +42,10 @@ esac
 
 echo "> Dependencies installed. Pass is ready at:"
 echo "  ${DOTFILES_ROOT}/vendor/github.com/jmashburn/pass/pass"
+
+# Disable conventional commits check for the password store
+# (pass auto-generates commit messages that don't follow that format)
+if [[ -d "${HOME}/.password-store/.git" ]]; then
+  git -C "${HOME}/.password-store" config hooks.conventionalcommits false
+  echo "> Disabled conventional commits hook for password store"
+fi
