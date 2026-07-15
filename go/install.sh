@@ -1,92 +1,67 @@
 #!/usr/bin/env bash
 #
-# Description: Install Go programming language
-# Dependencies: curl, tar
+# Install or update Go
+# macOS: via Homebrew
+# Linux: via official binary from go.dev
 #
 
 set -euo pipefail
 
+install_macos() {
+  if ! command -v brew &>/dev/null; then
+    echo "Homebrew not found. Install it first: https://brew.sh" >&2
+    exit 1
+  fi
 
-# This script installs or updates to the latest version of Go.
-# Multi-platform (Linux and macOS)
-# Multi-architecture (amd64, arm64, arm) support
-#
-# Add to your .profile, .bash_profile or .zshenv:
-# export PATH=$PATH:/usr/local/go/bin
+  if brew list go &>/dev/null; then
+    echo "> Upgrading Go via Homebrew"
+    brew upgrade go || true  # 'already up-to-date' exits non-zero
+  else
+    echo "> Installing Go via Homebrew"
+    brew install go
+  fi
+}
 
+install_linux() {
+  if ! command -v curl &>/dev/null || ! command -v jq &>/dev/null; then
+    echo "curl and jq are required for Linux Go install" >&2
+    exit 1
+  fi
 
-OPT_DIR="/opt/"
-source $DOTFILES_ROOT/go/path.bash
+  local version
+  version="$(curl -fsSL 'https://go.dev/dl/?mode=json' | jq -r '.[0].version')"
 
-if [[ ! -d $OPT_DIR ]]
-then
-    mkdir $OPT_DIR
-fi
+  local current
+  current="$(/usr/local/go/bin/go version 2>/dev/null | awk '{print $3}' || true)"
 
+  if [[ "$current" == "$version" ]]; then
+    echo "Go is already up-to-date at $version"
+    return
+  fi
 
-deps=( curl jq )
-unset bail
-for i in "${deps[@]}"; do command -v "$i" >/dev/null 2>&1 || { bail="$?"; echo "$i" is not available; }; done
-if [ "$bail" ]; then exit "$bail"; fi
+  local arch
+  case "$(uname -m)" in
+    x86_64)        arch="amd64" ;;
+    arm64|aarch64) arch="arm64" ;;
+    armv6l|armv7l) arch="armv6l" ;;
+    *) echo "Unsupported architecture: $(uname -m)" >&2; exit 1 ;;
+  esac
 
-version="$(curl -s 'https://go.dev/dl/?mode=json' | jq -r '.[0].version')"
-current="$(${OPT_DIR}/go/bin/go version 2>/dev/null | awk '{print $3}')"
-if [[ "$current" == "$version" ]]; then
-  echo "Go is already up-to-date at version ${version}"
-  exit 0
-fi
+  local tarball="/tmp/${version}.linux-${arch}.tar.gz"
+  echo "> Downloading $version for linux/$arch"
+  curl -fsSL "https://golang.org/dl/${version}.linux-${arch}.tar.gz" -o "$tarball"
 
-update_go() {
-  local arch="$1"
-  local os="$2"
+  echo "> Installing to /usr/local/go"
+  sudo rm -rf /usr/local/go
+  sudo tar -C /usr/local -xzf "$tarball"
+  rm "$tarball"
 
-  local go_url="https://golang.org/dl/${version}.${os}-${arch}.tar.gz"
-
-  curl -so "/tmp/${version}.${os}-${arch}.tar.gz" -L "$go_url" && \
-    rm -rf ${OPT_DIR}/go && tar -C ${OPT_DIR}/ -xzf /tmp/${version}.${os}-${arch}.tar.gz
-
-  tar -C ${OPT_DIR}/ -xzf "/tmp/${version}.${os}-${arch}.tar.gz" && \
-    echo "Go updated to version ${version}"
-
-  rm "/tmp/${version}.${os}-${arch}.tar.gz"
+  echo "> Go $version installed"
+  /usr/local/go/bin/go version
 }
 
 case "$(uname -s)" in
-  Linux)
-    case "$(uname -m)" in
-      armv6l|armv7l)
-        update_go "armv6l" "linux"
-        ;;
-      arm64)
-        update_go "arm64" "linux"
-        ;;
-      x86_64)
-        update_go "amd64" "linux"
-        ;;
-      *)
-        echo "Unsupported architecture: $(uname -m)" >&2
-        exit 1
-        ;;
-    esac
-    ;;
-  Darwin)
-    case "$(uname -m)" in
-      arm64)
-        update_go "arm64" "darwin"
-        ;;
-      x86_64)
-        update_go "amd64" "darwin"
-        ;;
-      *)
-        echo "Unsupported architecture: $(uname -m)" >&2
-        exit 1
-        ;;
-    esac
-    ;;
-  *)
-    echo "Unsupported operating system: $(uname -s)" >&2
-    exit 1
-    ;;
+  Darwin) install_macos ;;
+  Linux)  install_linux ;;
+  *) echo "Unsupported OS: $(uname -s)" >&2; exit 1 ;;
 esac
-
-${OPT_DIR}/go/bin/go version
