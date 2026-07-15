@@ -39,12 +39,29 @@ add_to_path() {
   fi
 }
 
+# ── Update: detect install method and use the right updater ──────────────────
+
+update_gcloud() {
+  # When installed via apt/brew/snap, gcloud components update is disabled.
+  # Detect by checking if the component manager reports it's disabled.
+  if gcloud components update --quiet 2>&1 | grep -q "disabled\|not available\|package manager"; then
+    echo "> Component manager disabled — updating via package manager"
+    if command -v apt-get &>/dev/null && apt-cache show google-cloud-cli &>/dev/null 2>&1; then
+      sudo apt-get update -q && sudo apt-get install -y --only-upgrade google-cloud-cli
+    elif command -v brew &>/dev/null && brew list google-cloud-sdk &>/dev/null 2>&1; then
+      brew upgrade google-cloud-sdk || true
+    else
+      echo "> Could not determine package manager. Update gcloud manually." >&2
+    fi
+  fi
+  echo "> $(gcloud version | head -1)"
+}
+
 # ── Main ──────────────────────────────────────────────────────────────────────
 
 if already_installed; then
   echo "> Updating Google Cloud SDK"
-  gcloud components update --quiet
-  echo "> $(gcloud version | head -1)"
+  update_gcloud
   exit 0
 fi
 
