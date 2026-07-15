@@ -85,10 +85,6 @@ function _git-upstream-branch-gone() {
 	[[ "$(git status -s -b | sed -e 's/.* //')" == "[gone]" ]]
 }
 
-function _jj-hide-status() {
-	[[ "$(jj config get dotfiles.hide-status)" == "1"  ]] || [[ "$(jj config get dotfiles.hide-status)" == "true" ]]
-}
-
 function _git-status() {
 	local git_status_flags=
 	if [[ "${SCM_GIT_IGNORE_UNTRACKED:-}" == "true" ]]; then
