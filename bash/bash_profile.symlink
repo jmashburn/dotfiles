@@ -1,0 +1,5 @@
+# ~/.bash_profile
+# Login shells (WSL new terminal/tab, SSH) read this file, not ~/.bashrc.
+# Source ~/.bashrc so everything loads consistently regardless of shell type.
+
+[[ -f ~/.bashrc ]] && source ~/.bashrc
