@@ -21,4 +21,4 @@ export PASSWORD_STORE_EXTENSIONS_DIR=${SCRIPTPATH}/extensions/
 #
 # Execute the "real" binary
 #
-exec ${SCRIPTPATH}/bin/password-store.sh $*
+exec "${SCRIPTPATH}/bin/password-store.sh" "$@"
