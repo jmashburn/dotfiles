@@ -4,4 +4,4 @@
 # Quick shortcut to an editor in a prompt
 #
 #
-exec "$EDITOR --wait" $@
+exec $EDITOR --wait "$@"
