@@ -17,16 +17,14 @@ displayUsageAndExit() {
     echo ""
     echo "Options:"
     echo "  -e, --edit       Open dotfiles directory for editing"
+    echo "  -p, --pull       Pull latest changes from git before relinking"
     echo "  -t, --tools      Run tool installers (Go, AWS CLI, etc.)"
     echo "  -h, --help       Show this message and exit"
-    echo ""
-    echo "Running dot with no options will:"
-    echo "  1. Pull latest changes from git"
-    echo "  2. Refresh all symlinks (skipping existing)"
     exit
 }
 
 run_tools=false
+do_pull=false
 
 while test $# -gt 0; do
     case "$1" in
@@ -39,6 +37,9 @@ while test $# -gt 0; do
         "-t"|"--tools")
             run_tools=true
             ;;
+        "-p"|"--pull")
+            do_pull=true
+            ;;
         *)
             echo "Invalid option: $1"
             displayUsageAndExit
@@ -46,6 +47,11 @@ while test $# -gt 0; do
     esac
     shift
 done
+
+if [ "$do_pull" = "true" ]; then
+    echo "> Pulling latest changes"
+    git -C "$dotfilesDirectory" pull --rebase --quiet
+fi
 
 # Refresh symlinks (skip existing)
 echo "> Refreshing symlinks"
