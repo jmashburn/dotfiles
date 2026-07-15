@@ -16,6 +16,10 @@ export CLOUD_ML_REGION="us-east5"
 export VERTEXAI_PROJECT="itpc-gcp-it-all-claude"       # Vertex AI Python SDK
 export VERTEXAI_LOCATION="us-east5"
 
+# ── Claude Code via Vertex AI ─────────────────────────────────────────────────
+export CLAUDE_CODE_USE_VERTEX=1
+export ANTHROPIC_VERTEX_PROJECT_ID="itpc-gcp-it-all-claude"
+
 # ── Application Default Credentials ───────────────────────────────────────────
 # Used by all Google Cloud client libraries (Python, Go, Node, etc.)
 export GOOGLE_APPLICATION_CREDENTIALS="${HOME}/.config/gcloud/application_default_credentials.json"
