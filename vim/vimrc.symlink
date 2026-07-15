@@ -158,6 +158,14 @@ set foldlevel=100 " Don't autofold anything (but I can still fold manually)
 set foldopen-=search " don't open folds when you search into them
 set foldopen-=undo " don't open folds when you undo stuff
 
+" GnuPG — transparent editing of .gpg / .pgp / .asc files
+" Uses key A76C3658 (Jared Mashburn). Open any .gpg file and vim handles
+" decrypt on open and re-encrypt on save automatically.
+let g:GPGDefaultRecipients = ['A76C3658']
+let g:GPGPreferArmor       = 0   " binary gpg output (smaller files)
+let g:GPGPreferSign        = 0   " don't auto-sign (sign manually when needed)
+let g:GPGUsePipes          = 1   " more secure: no temp files on disk
+
 nnoremap <Leader>W :%s/\s\+$//<cr>:let @/=''<CR>
 nnoremap <Leader>a :Ack
 nnoremap <Leader>q gqip
