@@ -45,7 +45,7 @@ if [[ "$OSTYPE" == "linux-gnu"* ]]; then
     ${download_command} ${BIN_DIR}/sonar-scanner-cli/sonar-scanner-cli-${VER}-linux-${arch}.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-${VER}-linux-${arch}.zip
 
     unzip -oqq "${BIN_DIR}/sonar-scanner-cli/sonar-scanner-cli-${VER}-linux-${arch}.zip" -d "${BIN_DIR}/sonar-scanner-cli/"
-    rm "/${BIN_DIR}/sonar-scanner-cli/sonar-scanner-cli-${VER}-linux-${arch}.zip"
-    
-    ln -s ${BIN_DIR}/sonar-scanner-cli/sonar-scanner-cli-${VER}-linux-${arch}/ ${BIN_DIR}/sonar-scanner-cli/current
+    rm "${BIN_DIR}/sonar-scanner-cli/sonar-scanner-cli-${VER}-linux-${arch}.zip"
+
+    ln -sf "${BIN_DIR}/sonar-scanner-cli/sonar-scanner-cli-${VER}-linux-${arch}/" "${BIN_DIR}/sonar-scanner-cli/current"
 fi
