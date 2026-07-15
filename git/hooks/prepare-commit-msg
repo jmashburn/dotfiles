@@ -1,0 +1,13 @@
+#!/bin/sh
+# Auto-prefix commit message with ticket number from branch name
+# e.g. feature/PROJ-123-add-auth → [PROJ-123] your message
+# Skips merge commits, amends, and squashes
+[ "$2" = "merge" ] || [ "$2" = "squash" ] || [ "$2" = "commit" ] && exit 0
+
+branch=$(git symbolic-ref --short HEAD 2>/dev/null)
+ticket=$(echo "$branch" | grep -oE '[A-Z]+-[0-9]+' | head -1)
+
+if [ -n "$ticket" ]; then
+  # Only prepend if not already present
+  head -1 "$1" | grep -qF "[$ticket]" || sed -i.bak "1s/^/[$ticket] /" "$1" && rm -f "$1.bak"
+fi

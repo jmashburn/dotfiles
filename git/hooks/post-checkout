@@ -1,0 +1,14 @@
+#!/bin/sh
+# Remind to reinstall deps when lockfiles change between branches
+# $1=previous HEAD, $2=new HEAD, $3=1 if branch checkout (0 if file)
+[ "$3" != "1" ] && exit 0
+
+changed=$(git diff --name-only "$1" "$2" 2>/dev/null)
+[ -z "$changed" ] && exit 0
+
+echo "$changed" | grep -qE '^package(-lock)?\.json$' && echo "  ⚠️  package.json changed — run: npm install"
+echo "$changed" | grep -q 'yarn\.lock'               && echo "  ⚠️  yarn.lock changed — run: yarn install"
+echo "$changed" | grep -q 'Gemfile\.lock'             && echo "  ⚠️  Gemfile changed — run: bundle install"
+echo "$changed" | grep -q 'go\.mod'                   && echo "  ⚠️  go.mod changed — run: go mod tidy"
+echo "$changed" | grep -q 'requirements.*\.txt'       && echo "  ⚠️  requirements.txt changed — run: pip install -r requirements.txt"
+echo "$changed" | grep -q 'Pipfile\.lock'             && echo "  ⚠️  Pipfile changed — run: pipenv install"
