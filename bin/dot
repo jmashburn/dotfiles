@@ -47,10 +47,6 @@ while test $# -gt 0; do
     shift
 done
 
-# Pull latest
-echo "> Pulling latest changes"
-git -C "$dotfilesDirectory" pull --rebase --quiet
-
 # Refresh symlinks (skip existing)
 echo "> Refreshing symlinks"
 "$dotfilesDirectory/script/bootstrap" -S
