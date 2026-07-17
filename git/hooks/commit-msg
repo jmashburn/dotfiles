@@ -1,6 +1,11 @@
 #!/bin/sh
 # Strip AI co-authorship trailers from commit messages (cross-platform)
-perl -i -ne 'print unless /^Co-Authored-By:.*[Cc]laude/' "$1"
+# # Remove AI metadata trailers from commit messages
+perl -i -ne '
+  next if /^(Co-Authored-By:.*(Claude|ChatGPT|OpenAI|Gemini|Copilot|Cursor))/i;
+  next if /^(Claude|ChatGPT|OpenAI|Gemini|Copilot|Cursor)-/i;
+  print;
+' "$1"
 
 # Enforce Conventional Commits format (opt-in per repo)
 # Enable with: git config hooks.conventionalcommits true
