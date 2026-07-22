@@ -256,6 +256,7 @@
     showUntrackedFiles = all
 
 [tag]
+    gpgSign = true
     sort = -taggerdate
 
 [url "https://github.com/"]
