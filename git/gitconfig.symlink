@@ -167,7 +167,7 @@
     old = red
 
 [commit]
-    gpgSign = false
+    gpgSign = true
     template = ~/.gitmessage
 
 [core]
