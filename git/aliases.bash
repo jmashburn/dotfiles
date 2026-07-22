@@ -32,11 +32,13 @@ alias gdel='git branch -D'
 alias gbc='git for-each-ref --format="%(authorname) %09 %(if)%(HEAD)%(then)*%(else)%(refname:short)%(end) %09 %(creatordate)" refs/remotes/ --sort=authorname DESC' # FROM https://stackoverflow.com/a/58623139/10362396
 
 # commit
-alias gc='git commit -v -t'
+alias gc='git commit -v' # template loads automatically via commit.template
 alias gca='git commit -v -a'
-alias gcaa='git commit -a --amend -C HEAD' # Add uncommitted and unstaged changes to the last commit
+alias gcaa='git commit -a --amend -C HEAD' # Fold tracked modifications into the last commit, keeping its message
+alias gcan='git commit --amend --no-edit'  # Amend only what's already staged, keep the message
 alias gcam='git commit -v -am'
 alias gcamd='git commit --amend'
+alias gcf='git commit --fixup' # gcf <sha> then grma to autosquash
 alias gcm='git commit -v -m'
 alias gci='git commit --interactive'
 alias gcsam='git commit -S -am'
@@ -45,7 +47,7 @@ alias gcsam='git commit -S -am'
 #alias gcb='git checkout -b'
 alias gco='git checkout'
 alias gcob='git checkout -b'
-alias gcobu='git checkout -b ${USER}/'
+gcobu() { git checkout -b "${USER}/$1"; } # gcobu feature -> branch jared/feature
 alias gcom='git checkout $(get_default_branch)'
 alias gcpd='git checkout $(get_default_branch); git pull; git branch -D'
 alias gct='git checkout --track'
@@ -84,6 +86,7 @@ alias ggup='git log --branches --not --remotes --no-walk --decorate --oneline' #
 alias gll='git log --graph --pretty=oneline --abbrev-commit'
 alias gnew='git log HEAD@{1}..HEAD@{0}' # Show commits since last pull, see http://blogs.atlassian.com/2014/10/advanced-git-aliases/
 alias gwc='git whatchanged'
+alias grl='git reflog' # undo net after amend/reset/rebase
 
 # ls-files
 alias gu='git ls-files . --exclude-standard --others' # Show untracked files
@@ -112,7 +115,7 @@ alias gpatch='git format-patch -1'
 # push
 alias gp='git push'
 alias gpd='git push --delete'
-alias gpf='git push --force'
+alias gpf='git push --force-with-lease' # refuses to clobber commits you haven't seen
 alias gpo='git push origin HEAD'
 alias gpom='git push origin $(get_default_branch)'
 alias gpu='git push --set-upstream'
