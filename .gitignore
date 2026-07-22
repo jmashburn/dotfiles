@@ -1,26 +1,27 @@
 git/gitconfig.*.symlink
 fidelity
 
-# Claude Code - exclude machine-specific files anywhere in the repo
+# Claude Code - machine-specific/runtime files (~/.claude -> claude/claude.symlink)
 **/.claude/settings.local.json
-claude/settings.local.json
-claude/history.jsonl
-claude/stats-cache.json
-claude/projects/
-claude/sessions/
-claude/session-env/
-claude/cache/
-claude/backups/
-claude/debug/
-claude/downloads/
-claude/file-history/
-claude/paste-cache/
-claude/plans/
-claude/plugins/
-claude/shell-snapshots/
-claude/tasks/
-claude/todos/
-claude/ide/
+claude/claude.symlink/settings.local.json
+claude/claude.symlink/history.jsonl
+claude/claude.symlink/stats-cache.json
+claude/claude.symlink/projects/
+claude/claude.symlink/sessions/
+claude/claude.symlink/session-env/
+claude/claude.symlink/cache/
+claude/claude.symlink/backups/
+claude/claude.symlink/debug/
+claude/claude.symlink/downloads/
+claude/claude.symlink/file-history/
+claude/claude.symlink/paste-cache/
+claude/claude.symlink/plans/
+claude/claude.symlink/plugins/
+claude/claude.symlink/shell-snapshots/
+claude/claude.symlink/tasks/
+claude/claude.symlink/todos/
+claude/claude.symlink/ide/
+claude/claude.symlink/node_modules/
 
 # Claude home (~/.claude): package-manager & env stubs — empty or local-only, never ours to commit
 claude/claude.symlink/.env
