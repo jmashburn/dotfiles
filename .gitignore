@@ -22,6 +22,19 @@ claude/tasks/
 claude/todos/
 claude/ide/
 
+# Claude home (~/.claude): package-manager & env stubs — empty or local-only, never ours to commit
+claude/claude.symlink/.env
+claude/claude.symlink/.env.*
+claude/claude.symlink/.npmrc
+claude/claude.symlink/.yarnrc
+claude/claude.symlink/.yarnrc.yml
+claude/claude.symlink/bunfig.toml
+claude/claude.symlink/.gitmodules
+claude/claude.symlink/package.json
+claude/claude.symlink/package-lock.json
+claude/claude.symlink/pnpm-lock.yaml
+claude/claude.symlink/yarn.lock
+
 # Backup files from improvements
 .backups/
 **/*.backup
