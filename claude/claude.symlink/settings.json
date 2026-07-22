@@ -3,10 +3,6 @@
   "permissions": {
     "defaultMode": "dontAsk"
   },
-  "attributions": {
-    "commit": "",
-    "pr": ""
-  },
   "hooks": {
     "CwdChanged": [
       {
@@ -59,6 +55,11 @@
   "theme": "dark-ansi",
   "editorMode": "vim",
   "autoCompactEnabled": false,
+  "remoteControlAtStartup": true,
+  "attributions": {
+    "commit": "",
+    "pr": ""
+  },
   "vim": {
     "enabled": true
   },
@@ -75,5 +76,5 @@
       }
     }
   },
-  "model": "claude-sonnet-4-6[1m]"
+  "inputNeededNotifEnabled": true
 }

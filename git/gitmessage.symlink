@@ -1,42 +1,28 @@
-# <type>: <summary>
-# Example: ✨ feat(login): add OAuth2 support
-# -----------------------------------------------------------------------
-# ✅ Use one of the following types (with emojis):
-# ✨ feat        – new feature
-# 🐛 fix         – bug fix
-# 📝 docs        – documentation
-# 💄 style       – code style (formatting, etc.)
-# 📚 refactor    – code refactor without behavior change
-# ⚡ perf        – performance improvement
-# ✅ test        – adding tests
-# 🔧 chore       – build or maintenance task
-# 👷 ci          – CI/CD configuration
-# ⏪ revert      – reverting commits
 
-# 📣 Title: Start with uppercase, no period. Imperative mood (e.g., "Fix", not "Fixed" or "Fixes")
-# Max 50 characters — limit is right here:       
-# ------------------------------------------------
-# 📣
-# ------------------------------------------------
-
-# 💡 Leave a blank line between title and body
-# 🧾 Body: Explain *what* and *why*, not *how*. Include Jira ID or ticket number if applicable.
-# Wrap lines at 72 characters — here's your guide:                      
-# -----------------------------------------------------------------------
-# 🧾 
-# -----------------------------------------------------------------------
-
-# 🙌 Contributors (leave at least one blank line above):
-# Co-authored-by: Name <user@users.noreply.github.com>
-# 🙌 Co-authored-by: 
-# 📚 Reference:
-# https://chris.beams.io/posts/git-commit/
+# <emoji> <type>(<scope>): <summary>
+#   ✨ feat(auth): add OAuth2 login   ·   🐛 fix(api): handle null token
 #
-# Commit Rules Recap:
-# 1. Separate subject from body with a blank line
-# 2. Limit subject line to 50 characters
-# 3. Capitalize the subject line
-# 4. Do not end the subject line with a period
-# 5. Use the imperative mood in the subject
-# 6. Wrap the body at 72 characters
-# 7. Use body to explain what and why, not how
+# ── Subject ── imperative · Capitalized · no period · ≤ 50 chars ──────────────
+#          1         2         3         4         5
+# 12345678901234567890123456789012345678901234567890
+#
+# ── Body ── what & why (not how) · blank line above · wrap at 72 ──────────────
+#          1         2         3         4         5         6         7
+# 123456789012345678901234567890123456789012345678901234567890123456789012
+#
+#
+# ── Footer (optional) ─────────────────────────────────────────────────────────
+#   BREAKING CHANGE: <what breaks and how to migrate>
+#   Closes #123   ·   Refs #456
+#   Co-authored-by: Name <user@users.noreply.github.com>
+#
+# ── Types ─────────────────────────────────────────────────────────────────────
+#   ✨ feat      new feature              ⚡ perf      performance
+#   🐛 fix       bug fix                  ✅ test      add / fix tests
+#   📝 docs      documentation            🔧 chore     tooling · deps · chores
+#   📚 refactor  behaviour-neutral edit   👷 ci        CI / CD pipelines
+#   💄 style     formatting only          🔒 security  security fix
+#   🚑 hotfix    urgent production fix     ⏪ revert    undo a previous commit
+#
+# A good subject completes: "If applied, this commit will <subject>".
+# Guide → https://chris.beams.io/posts/git-commit/
