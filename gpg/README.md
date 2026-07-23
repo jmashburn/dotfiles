@@ -39,6 +39,25 @@ To use a GUI prompt instead, install a GUI pinentry and set `pinentry-program`
 in `gpg-agent.conf` (commented examples are in the file), then
 `gpgconf --reload gpg-agent`.
 
+### Why the GUI pin can't be shared
+
+`pinentry-program` takes an absolute path, and `gpg-agent.conf` supports neither
+conditionals nor includes — so a GUI pinentry cannot be declared in the managed
+config without breaking every other OS. The correct path differs three ways
+(`/usr/bin/pinentry-curses` on WSL, `/opt/homebrew/bin/pinentry-mac` on Apple
+Silicon, `/usr/local/bin/pinentry-mac` on Intel). Hence the commented menu above:
+the pin is a deliberate per-machine opt-in.
+
+A machine that opts in keeps `~/.gnupg/gpg-agent.conf` as a **real file, not
+symlinked** to `gnupg.symlink/gpg-agent.conf`, and sets `pinentry-program` there.
+Worth doing on macOS: curses pinentry needs a controlling TTY, so without a GUI
+pin, signing fails with `gpg: signing failed: Timeout` from any non-interactive
+context — editors, hooks, and tooling — not just at a bare prompt.
+
+The tradeoff is drift: that machine stops tracking changes to the managed
+`gpg-agent.conf`, and a later `script/bootstrap` run will try to link over the
+local file. Reconcile the two by hand when that happens.
+
 ---
 
 # Key-management workflows
