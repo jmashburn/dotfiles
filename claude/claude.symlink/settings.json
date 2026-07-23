@@ -1,5 +1,9 @@
 {
   "env": {},
+  "attribution": {
+    "commit": "",
+    "pr": ""
+  },
   "permissions": {
     "defaultMode": "dontAsk"
   },
@@ -56,10 +60,7 @@
   "editorMode": "vim",
   "autoCompactEnabled": false,
   "remoteControlAtStartup": true,
-  "attributions": {
-    "commit": "",
-    "pr": ""
-  },
+  "inputNeededNotifEnabled": true,
   "vim": {
     "enabled": true
   },
@@ -75,6 +76,5 @@
         "MARVIN_WORKSPACE_SLUG": "mash-burn-co"
       }
     }
-  },
-  "inputNeededNotifEnabled": true
+  }
 }

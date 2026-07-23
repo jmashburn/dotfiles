@@ -23,3 +23,11 @@
 # ── Application Default Credentials ───────────────────────────────────────────
 # Used by all Google Cloud client libraries (Python, Go, Node, etc.)
 #export GOOGLE_APPLICATION_CREDENTIALS="${HOME}/.config/gcloud/application_default_credentials.json"
+
+# Dev/testing: Override contact email in Google Docs comments
+#export DEV_CONTACT_EMAIL=jmashbur@redhat.com
+
+#a
+# MPP Metadata Service Configuration
+#export API_URL=https://paas-metadata-service-api.apps.mpp-w2-phub.e8ue.p1.openshiftapps.com
+#export REQUESTS_CA_BUNDLE="${HOME}/.ca.pem"
