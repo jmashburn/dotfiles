@@ -271,9 +271,11 @@
 
 [dotfiles]
     hide-status = 0
+# Resolve gh from PATH rather than an absolute path: it lives in different
+# places per machine (/usr/bin on WSL2, /opt/homebrew/bin on Apple Silicon).
 [credential "https://github.com"]
-	helper = 
-	helper = !/usr/bin/gh auth git-credential
+	helper =
+	helper = !gh auth git-credential
 [credential "https://gist.github.com"]
-	helper = 
-	helper = !/usr/bin/gh auth git-credential
+	helper =
+	helper = !gh auth git-credential
